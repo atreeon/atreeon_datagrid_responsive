@@ -6,20 +6,10 @@ on:
       - master
 
 jobs:
-  build:
-
+  drive:
     runs-on: ubuntu-latest
-
-    container:
-      image:  google/dart:latest
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup value_t2_generator
-        working-directory: ./atreeon_datagrid_responsive
-        run:  |
-          flutter get
-      - name: Run tests
-        working-directory: ./
-        run: flutter test
+      - uses: actions/checkout@v1
+      - uses: subosito/flutter-action@v1
+      - run: flutter test
 
