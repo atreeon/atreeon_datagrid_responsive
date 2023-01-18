@@ -55,10 +55,11 @@ var ramLookup = {64: "sixtyfour", 1: "one", 128: "one hundred & twenty eight"};
 ```
 
 ## Features
-* multi select
+* multi select over multiple pages
 * sorting and secondary sort capabilities
 * typed filtering
-* vertical responsive design
+* vertical responsive design (or fixed height)
+* paging or no paging
 
 ## Limitations
 * no cell editing capability (you can open a dialog on click of a row though)
@@ -66,3 +67,6 @@ var ramLookup = {64: "sixtyfour", 1: "one", 128: "one hundred & twenty eight"};
 * no grouping
 * no reording column placement
 * no widening or narrowing of column widths
+
+## Other Notes / Information
+*written a couple of years ago* 
