@@ -1,0 +1,11 @@
+#!/bin/sh
+
+flutter test > /dev/null 2>&1
+EXIT_CODE_LAST=$?
+
+if [ $EXIT_CODE_LAST != "0" ] ; then
+  echo "testing failed"
+  exit 1; fi;
+
+echo "success"
+exit 0
