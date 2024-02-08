@@ -1,3 +1,9 @@
+## [0.1.0]
+    updated dependencies
+
+## [0.0.3]
+    overflow problem on resize fixed
+
 ## [0.0.2]
     √show a dropdown for the different filter types (add greater than, less than, between & equals)
     √have an option to add a scrollable to my rows

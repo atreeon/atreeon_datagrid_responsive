@@ -122,15 +122,15 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
     setState(() {
       //to do: add tests here as is complicated
       if (maxHeight == null) {
-        rowsPerPage = (size.height - (hasFilter ? 140 : 110)) ~/ (rowHeight);
+        rowsPerPage = (size.height - (hasFilter ? 145 : 110)) ~/ (rowHeight);
         widgetSize = size;
       } else {
-        rowsPerPage = (widget.maxHeight! - (hasFilter ? 140 : 110)) ~/ (rowHeight);
+        rowsPerPage = (widget.maxHeight! - (hasFilter ? 145 : 110)) ~/ (rowHeight);
 
         if (data.length <= rowsPerPage) {
           rowsPerPage = data.length;
 
-          maxHeight = rowsPerPage * rowHeight + (hasFilter ? 80 : 50);
+          maxHeight = rowsPerPage * rowHeight + (hasFilter ? 85 : 50);
         }
       }
     });
@@ -185,7 +185,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
 
     double headingRowHeight = hasFilter ? 77 : 45;
 
-    return FlexibleFixedW(
+    return FlexibleFixedHeightW(
       height: maxHeight,
       child: GetChildSize(
         onChange: (size) {
@@ -204,15 +204,17 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
                 columns: columns,
               )
             else
-              AtreeonPaginatedDataTable(
-                columnSpacing: 20,
-                showCheckboxColumn: false,
-                showFirstLastButtons: true,
-                dataRowHeight: rowHeight,
-                source: dts,
-                headingRowHeight: headingRowHeight,
-                columns: columns,
-                rowsPerPage: rowsPerPage,
+              SingleChildScrollView(
+                child: AtreeonPaginatedDataTable(
+                  columnSpacing: 20,
+                  showCheckboxColumn: false,
+                  showFirstLastButtons: true,
+                  dataRowHeight: rowHeight,
+                  source: dts,
+                  headingRowHeight: headingRowHeight,
+                  columns: columns,
+                  rowsPerPage: rowsPerPage,
+                ),
               ),
             widget.onCreateClick == null
                 ? Container()
@@ -302,12 +304,12 @@ class DTS<T> extends DataTableSource {
 
 ///If a height is passed it is a fixed height widget
 ///
-///If height is null it is flexible
-class FlexibleFixedW extends StatelessWidget {
+///If height is null it is flexible (column(expanded))
+class FlexibleFixedHeightW extends StatelessWidget {
   final Widget child;
   final double? height;
 
-  const FlexibleFixedW({
+  const FlexibleFixedHeightW({
     Key? key,
     required this.child,
     this.height,
