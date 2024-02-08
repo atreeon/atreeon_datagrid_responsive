@@ -1,0 +1,27 @@
+name: example
+description: A new Flutter project.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.0-0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+#  cupertino_icons: ^0.1.3
+  atreeon_datagrid_responsive:
+    path: ../
+  font_awesome_flutter: ^9.0.0
+  optional: ^6.0.0-nullsafety.0
+  intl: ^0.18.0
+  atreeon_menu_flutter: ^0.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
