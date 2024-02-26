@@ -45,6 +45,9 @@ class ResusableDatagridW<T> extends StatefulWidget {
 
   final double fontSize;
 
+  final double columnSpacing;
+  final double horizontalMargin;
+
   ///[fields] definition of fields to display
   ///[lastSaveDate] change this field to update the list with new data (can't do a compare of thousands of records nicely)
   ResusableDatagridW({
@@ -62,7 +65,9 @@ class ResusableDatagridW<T> extends StatefulWidget {
     this.selectName = "select",
     this.selectedIds,
     this.maxHeight,
-    required this.fontSize,
+    this.fontSize = 12,
+    this.columnSpacing = 10,
+    this.horizontalMargin = 10,
   }) : super(key: key);
 
   _ResusableDatagridW<T> createState() => _ResusableDatagridW();
@@ -210,7 +215,9 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
                     // border: Border.all(color: Colors.green),
                     ),
                 child: DataTable(
-                  columnSpacing: 20,
+                  columnSpacing: widget.columnSpacing,
+                  horizontalMargin: widget.horizontalMargin,
+                  dividerThickness: 0,
                   showCheckboxColumn: false,
                   dataRowMaxHeight: rowHeight,
                   dataRowMinHeight: rowHeight,
@@ -226,7 +233,8 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
                     ),
                 child: SingleChildScrollView(
                   child: AtreeonPaginatedDataTable(
-                    columnSpacing: 20,
+                    columnSpacing: widget.columnSpacing,
+                    horizontalMargin: widget.horizontalMargin,
                     showCheckboxColumn: false,
                     showFirstLastButtons: true,
                     dataRowHeight: rowHeight,

@@ -1,3 +1,6 @@
+## [0.3.0]
+    column spacing and margin params
+
 ## [0.2.0]
     added additional heights and cleaned up the margins
     the filter is now shown when you long press on a field header
