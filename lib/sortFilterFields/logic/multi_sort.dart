@@ -1,23 +1,9 @@
 library atreeon_datagrid_responsive;
 
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/SortField.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/fn_fieldDef.dart';
 import 'package:diacritic/diacritic.dart';
-
-import 'common.dart';
-
-//class SortField {
-//  final String fieldName;
-//  final bool isAscending;
-//
-//  SortField(this.fieldName, {this.isAscending = true});
-//}
-
-//class Field2_String<T> {
-//  final String Function(T) fieldDefinition;
-//  final String label;
-//  final SortField2? sort;
-//
-//  Field2_String(this.fieldDefinition, this.label, {this.sort});
-//}
 
 extension MultiSort<T> on Iterable<T> {
   Iterable<T> multisort(List<Field<T>> sortedFields) {

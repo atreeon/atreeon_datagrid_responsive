@@ -1,8 +1,8 @@
 library multi_filter;
 
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:diacritic/diacritic.dart';
-
-import 'common.dart';
 
 extension MultiSort<T> on Iterable<T> {
   Iterable<T> multiFilter(List<Field<T>> fields) {

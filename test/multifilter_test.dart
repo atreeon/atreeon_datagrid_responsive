@@ -1,7 +1,8 @@
 //flutter test --plain-name=LessonSplitter
 
-import 'package:atreeon_datagrid_responsive/common.dart';
-import 'package:atreeon_datagrid_responsive/multi_filter.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/logic/multi_filter.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:test/test.dart';
 
 class Unsupported implements Comparable<dynamic> {

@@ -1,4 +1,5 @@
-import 'package:atreeon_datagrid_responsive/common.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
 
 /// {@template [FilterBox]}
@@ -16,10 +17,17 @@ class FilterBox<T> extends StatefulWidget {
 
   final void Function(List<Field<T>>) onChange;
 
+  final double fontSize;
+
   ///{@macro [FilterBox]}
   ///
   ///{@macro [labelId]}
-  FilterBox(this.fields, this.labelId, this.onChange); //, this.filterDataType);
+  FilterBox(
+    this.fields,
+    this.labelId,
+    this.onChange,
+    this.fontSize,
+  );
 
   _FilterBoxState createState() => _FilterBoxState<T>();
 }
@@ -120,7 +128,7 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
         DropdownButton<DropdownEnum>(
           isDense: true,
           value: this.dropdownSelection,
-          style: const TextStyle(color: Colors.grey),
+          style: TextStyle(color: Colors.grey, fontSize: widget.fontSize),
           onChanged: (DropdownEnum? value) {
             if (value == null) {
               return;
@@ -137,39 +145,42 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
         ),
         if (this.dropdownSelection.searchFieldType == eSearchFieldType.oneField)
           Container(
-            width: 50,
+            width: 150,
             child: TextField(
               controller: controller1,
               keyboardType: keyboardType,
               decoration: InputDecoration(
                 isDense: true,
               ),
+              style: TextStyle(fontSize: widget.fontSize),
             ),
           ),
         if (this.dropdownSelection.searchFieldType == eSearchFieldType.twoFields)
           Row(
             children: [
               Container(
-                width: 30,
+                width: 75,
                 child: TextField(
                   controller: controller1,
                   keyboardType: keyboardType,
                   decoration: InputDecoration(
                     isDense: true,
                   ),
+                  style: TextStyle(fontSize: widget.fontSize),
                 ),
               ),
               Container(
                 width: 5,
               ),
               Container(
-                width: 30,
+                width: 75,
                 child: TextField(
                   controller: controller2,
                   keyboardType: keyboardType,
                   decoration: InputDecoration(
                     isDense: true,
                   ),
+                  style: TextStyle(fontSize: widget.fontSize),
                 ),
               ),
             ],

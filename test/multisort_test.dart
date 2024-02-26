@@ -1,7 +1,8 @@
 //flutter test --plain-name=LessonSplitter
 
-import 'package:atreeon_datagrid_responsive/common.dart';
-import 'package:atreeon_datagrid_responsive/multi_sort.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/logic/multi_sort.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/SortField.dart';
 import 'package:test/test.dart';
 
 // Class of Phone

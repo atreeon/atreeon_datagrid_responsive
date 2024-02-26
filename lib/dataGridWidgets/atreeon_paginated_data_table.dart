@@ -77,7 +77,10 @@ class AtreeonPaginatedDataTable extends StatefulWidget {
     this.checkboxHorizontalMargin,
     this.controller,
     this.primary,
-  }) : assert(actions == null || (actions != null && header != null)),
+    required this.fontSize,
+    required this.iconSize,
+    required this.footerHeight,
+  })  : assert(actions == null || (actions != null && header != null)),
         assert(columns != null),
         assert(dragStartBehavior != null),
         assert(columns.isNotEmpty),
@@ -98,9 +101,10 @@ class AtreeonPaginatedDataTable extends StatefulWidget {
           return true;
         }()),
         assert(source != null),
-        assert(!(controller != null && (primary ?? false)),
-        'Primary ScrollViews obtain their ScrollController via inheritance from a PrimaryScrollController widget. '
-            'You cannot both set primary to true and pass an explicit controller.',
+        assert(
+          !(controller != null && (primary ?? false)),
+          'Primary ScrollViews obtain their ScrollController via inheritance from a PrimaryScrollController widget. '
+          'You cannot both set primary to true and pass an explicit controller.',
         );
 
   /// The table card's optional header.
@@ -239,6 +243,12 @@ class AtreeonPaginatedDataTable extends StatefulWidget {
   /// {@macro flutter.widgets.scroll_view.primary}
   final bool? primary;
 
+  final double fontSize;
+
+  final double iconSize;
+
+  final double footerHeight;
+
   @override
   AtreeonPaginatedDataTableState createState() => AtreeonPaginatedDataTableState();
 }
@@ -256,7 +266,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
   @override
   void initState() {
     super.initState();
-    _firstRowIndex = PageStorage.of(context)?.readState(context) as int? ?? widget.initialFirstRowIndex ?? 0;
+    _firstRowIndex = PageStorage.of(context).readState(context) as int? ?? widget.initialFirstRowIndex ?? 0;
     widget.source.addListener(_handleDataSourceChanged);
     _handleDataSourceChanged();
   }
@@ -293,8 +303,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
       final int rowsPerPage = widget.rowsPerPage;
       _firstRowIndex = (rowIndex ~/ rowsPerPage) * rowsPerPage;
     });
-    if ((widget.onPageChanged != null) &&
-        (oldFirstRowIndex != _firstRowIndex)) {
+    if ((widget.onPageChanged != null) && (oldFirstRowIndex != _firstRowIndex)) {
       widget.onPageChanged!(_firstRowIndex);
     }
   }
@@ -360,8 +369,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
     pageTo(((_rowCount - 1) / widget.rowsPerPage).floor() * widget.rowsPerPage);
   }
 
-  bool _isNextPageUnavailable() => !_rowCountApproximate &&
-      (_firstRowIndex + widget.rowsPerPage >= _rowCount);
+  bool _isNextPageUnavailable() => !_rowCountApproximate && (_firstRowIndex + widget.rowsPerPage >= _rowCount);
 
   final GlobalKey _tableKey = GlobalKey();
 
@@ -396,15 +404,12 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
     final TextStyle? footerTextStyle = themeData.textTheme.caption;
     final List<Widget> footerWidgets = <Widget>[];
     if (widget.onRowsPerPageChanged != null) {
-      final List<Widget> availableRowsPerPage = widget.availableRowsPerPage
-          .where((int value) => value <= _rowCount || value == widget.rowsPerPage)
-          .map<DropdownMenuItem<int>>((int value) {
+      final List<Widget> availableRowsPerPage = widget.availableRowsPerPage.where((int value) => value <= _rowCount || value == widget.rowsPerPage).map<DropdownMenuItem<int>>((int value) {
         return DropdownMenuItem<int>(
           value: value,
           child: Text('$value'),
         );
-      })
-          .toList();
+      }).toList();
       footerWidgets.addAll(<Widget>[
         Container(width: 14.0), // to match trailing padding in case we overflow and end up scrolling
         Text(localizations.rowsPerPageTitle),
@@ -425,7 +430,9 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
       ]);
     }
     footerWidgets.addAll(<Widget>[
-      Container(width: 32.0),
+      Container(
+        width: 32.0,
+      ),
       Text(
         localizations.pageRowsInfoTitle(
           _firstRowIndex + 1,
@@ -433,36 +440,47 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
           _rowCount,
           _rowCountApproximate,
         ),
+        style: TextStyle(fontSize: widget.fontSize),
       ),
       Container(width: 32.0),
       if (widget.showFirstLastButtons)
         IconButton(
           icon: Icon(Icons.skip_previous, color: widget.arrowHeadColor),
-          padding: EdgeInsets.zero,
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+            iconSize: MaterialStateProperty.all(widget.iconSize),
+          ),
           tooltip: localizations.firstPageTooltip,
           onPressed: _firstRowIndex <= 0 ? null : _handleFirst,
         ),
       IconButton(
         icon: Icon(Icons.chevron_left, color: widget.arrowHeadColor),
-        padding: EdgeInsets.zero,
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+          iconSize: MaterialStateProperty.all(widget.iconSize),
+        ),
         tooltip: localizations.previousPageTooltip,
         onPressed: _firstRowIndex <= 0 ? null : _handlePrevious,
       ),
       Container(width: 24.0),
       IconButton(
         icon: Icon(Icons.chevron_right, color: widget.arrowHeadColor),
-        padding: EdgeInsets.zero,
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+          iconSize: MaterialStateProperty.all(widget.iconSize),
+        ),
         tooltip: localizations.nextPageTooltip,
         onPressed: _isNextPageUnavailable() ? null : _handleNext,
       ),
       if (widget.showFirstLastButtons)
         IconButton(
           icon: Icon(Icons.skip_next, color: widget.arrowHeadColor),
-          padding: EdgeInsets.zero,
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+            iconSize: MaterialStateProperty.all(widget.iconSize),
+          ),
           tooltip: localizations.lastPageTooltip,
-          onPressed: _isNextPageUnavailable()
-              ? null
-              : _handleLast,
+          onPressed: _isNextPageUnavailable() ? null : _handleLast,
         ),
       Container(width: 14.0),
     ]);
@@ -479,8 +497,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
                   // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
                   // list and then tweak them appropriately.
                   // See https://material.io/design/components/data-tables.html#tables-within-cards
-                  style: _selectedRowCount > 0 ? themeData.textTheme.subtitle1!.copyWith(color: themeData.colorScheme.secondary)
-                      : themeData.textTheme.headline6!.copyWith(fontWeight: FontWeight.w400),
+                  style: _selectedRowCount > 0 ? themeData.textTheme.subtitle1!.copyWith(color: themeData.colorScheme.secondary) : themeData.textTheme.headline6!.copyWith(fontWeight: FontWeight.w400),
                   child: IconTheme.merge(
                     data: const IconThemeData(
                       opacity: 0.54,
@@ -535,7 +552,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
                 child: SizedBox(
                   // TODO(bkonyi): this won't handle text zoom correctly,
                   //  https://github.com/flutter/flutter/issues/48522
-                  height: 56.0,
+                  height: widget.footerHeight,
                   child: SingleChildScrollView(
                     dragStartBehavior: widget.dragStartBehavior,
                     scrollDirection: Axis.horizontal,

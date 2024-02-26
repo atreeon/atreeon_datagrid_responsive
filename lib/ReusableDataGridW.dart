@@ -1,13 +1,13 @@
-import 'package:atreeon_datagrid_responsive/atreeon_paginated_data_table.dart';
+import 'package:atreeon_datagrid_responsive/dataGridWidgets/DataGridRowsDTS.dart';
+import 'package:atreeon_datagrid_responsive/dataGridWidgets/FlexibleFixedHeightW.dart';
+import 'package:atreeon_datagrid_responsive/dataGridWidgets/atreeon_paginated_data_table.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/SortableFilterableContainerW.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_get_child_size/atreeon_get_child_size.dart';
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'SortableFilterableContainerW.dart';
-import 'common.dart';
-import 'multi_filter.dart';
-import 'multi_sort.dart';
+import 'sortFilterFields/logic/multi_filter.dart';
+import 'sortFilterFields/logic/multi_sort.dart';
 
 ///[ResusableDatagridW.fields] what you pass into here is what will be compared in the filter.
 ///For example if your original data is [1,2,3]
@@ -20,6 +20,8 @@ class ResusableDatagridW<T> extends StatefulWidget {
   final List<T> data;
   final List<Field<T>> fields;
   final double rowHeight;
+  final double headerHeight;
+  final double footerHeight;
   final void Function(T)? onRowClick;
   final void Function()? onCreateClick;
   final DateTime? lastSaveDate;
@@ -41,6 +43,8 @@ class ResusableDatagridW<T> extends StatefulWidget {
   ///if [maxHeight] is null then we display as normal (page number)
   final double? maxHeight;
 
+  final double fontSize;
+
   ///[fields] definition of fields to display
   ///[lastSaveDate] change this field to update the list with new data (can't do a compare of thousands of records nicely)
   ResusableDatagridW({
@@ -48,6 +52,8 @@ class ResusableDatagridW<T> extends StatefulWidget {
     required this.data,
     required this.fields,
     required this.lastSaveDate,
+    required this.headerHeight,
+    required this.footerHeight,
     this.onRowClick,
     this.onCreateClick,
     this.rowHeight = 30,
@@ -56,6 +62,7 @@ class ResusableDatagridW<T> extends StatefulWidget {
     this.selectName = "select",
     this.selectedIds,
     this.maxHeight,
+    required this.fontSize,
   }) : super(key: key);
 
   _ResusableDatagridW<T> createState() => _ResusableDatagridW();
@@ -63,40 +70,44 @@ class ResusableDatagridW<T> extends StatefulWidget {
 
 class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
   var rowsPerPage = 100;
+  var remainderHeight = 0.0;
 
   ///used to hold the widget size so we always have that value if recalculating the size
-  var widgetSize = Size(100, 100);
+  var widgetSize = Size(100, 400);
   var selectedIds = <String>[];
 
   late double? maxHeight;
-  late bool hasFilter;
+
+  // late bool hasFilter;
   late double rowHeight;
   late List<Field<T>> fields;
   late Iterable<T> data;
 
-  void initState() {
+  void _init() {
     rowHeight = widget.rowHeight;
     fields = widget.fields;
     maxHeight = widget.maxHeight;
     data = widget.data.multiFilter(fields).multisort(fields);
-    hasFilter = fields.any((element) => (element.filter?.isSet ?? false) == true);
+    // hasFilter = fields.any((element) => (element.filter?.isSet ?? false) == true);
+    onSizeChange(widgetSize);
 
     if (widget.selectedIds != null && widget.identityFieldId != null) {
       selectedIds = widget.selectedIds! //
           .map((x) => widget.identityFieldId!.fieldDefinition(x).toString())
           .toList();
     }
+  }
+
+  void initState() {
+    _init();
 
     super.initState();
   }
 
   void didUpdateWidget(ResusableDatagridW<T> oldWidget) {
+    _init();
     if (widget.lastSaveDate != oldWidget.lastSaveDate || widget.data.length != oldWidget.data.length) {
-      data = widget.data;
-      rowsPerPage = 100;
       selectedIds = [];
-      maxHeight = widget.maxHeight;
-      onSizeChange(widgetSize);
     }
 
     super.didUpdateWidget(oldWidget);
@@ -110,7 +121,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
   }
 
   void toggleFilter() {
-    setState(() => hasFilter = !hasFilter);
+    // setState(() => hasFilter = !hasFilter);
     onSizeChange(widgetSize);
   }
 
@@ -120,17 +131,25 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
   ///Ignored if [widget.maxHeight] is set
   void onSizeChange(Size size) {
     setState(() {
-      //to do: add tests here as is complicated
       if (maxHeight == null) {
-        rowsPerPage = (size.height - (hasFilter ? 145 : 110)) ~/ (rowHeight);
+        rowsPerPage = (size.height) ~/ (rowHeight) - 2;
         widgetSize = size;
+        // print('size.height ${size.height}, rowHeight $rowHeight, rowsPerPage $rowsPerPage');
       } else {
-        rowsPerPage = (widget.maxHeight! - (hasFilter ? 145 : 110)) ~/ (rowHeight);
+        var rowsHeight = widget.maxHeight! - widget.footerHeight - widget.headerHeight;
+        rowsPerPage = (rowsHeight ~/ rowHeight);
+        var padding = (widget.footerHeight + widget.headerHeight + 2) / rowsPerPage;
+        remainderHeight = widget.maxHeight! - (rowsPerPage * (rowHeight + padding));
+        // print('size.height ${size.height}, maxHeight: $maxHeight, rowHeight $rowHeight, rowsPerPage $rowsPerPage, padding $padding, remainderHeight $remainderHeight, maxHeight: ${widget.maxHeight}');
+        // print('data.length <= rowsPerPage ${data.length <= rowsPerPage}, data.length ${data.length}, rowsPerPage $rowsPerPage');
 
+        //if the number of records <= max number of rows per page based on height
+        //eg 10 rows <= 15 max rows per page
         if (data.length <= rowsPerPage) {
           rowsPerPage = data.length;
 
-          maxHeight = rowsPerPage * rowHeight + (hasFilter ? 85 : 50);
+          //if so we set the maxHeight, when not null AtreeonPaginatedDataTable is used instead of DataTable
+          maxHeight = (rowsPerPage * rowHeight) + rowHeight;
         }
       }
     });
@@ -141,16 +160,6 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
       return Text("no data");
 
     var columns = [
-      DataColumn(
-        label: InkWell(
-          child: Icon(
-            FontAwesomeIcons.search,
-            color: widget.data.length == data.length ? Colors.black : Colors.blue,
-            size: widget.data.length == data.length ? 10 : 15,
-          ),
-          onTap: toggleFilter,
-        ),
-      ),
       ...widget.fields
           .map(
             (e) => DataColumn(
@@ -159,34 +168,35 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
                 labelId: e.labelId,
                 onPressed: setFields,
                 onChanged: setFields,
-                showFilter: hasFilter,
-                onShowFilter: toggleFilter,
+                fontSize: widget.fontSize,
               ),
             ),
           )
           .toList(),
       if (widget.identityFieldId != null && widget.onSelect != null) //
         DataColumn(
-          label: ElevatedButton(
-            child: Text(widget.selectName),
-            onPressed: () => widget.onSelect!(this.selectedIds),
+          label: InkWell(
+            child: Text(
+              widget.selectName,
+              style: TextStyle(fontSize: widget.fontSize, decoration: TextDecoration.underline),
+            ),
+            onTap: () => widget.onSelect!(this.selectedIds),
           ),
         ),
     ];
 
-    var dts = DTS(
+    var dts = DataGridRowsDTS(
       data.toList(),
       widget.fields,
       widget.onRowClick,
       widget.identityFieldId,
       selectedIds,
       (x) => setState(() => selectedIds = x),
+      fontSize: widget.fontSize,
     );
 
-    double headingRowHeight = hasFilter ? 77 : 45;
-
     return FlexibleFixedHeightW(
-      height: maxHeight,
+      height: maxHeight == null ? null : maxHeight!,
       child: GetChildSize(
         onChange: (size) {
           onSizeChange(size);
@@ -195,25 +205,38 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
           children: [
             //if maxHeight is set & maxHeight hasn't been reset because the number of children is less than max per rows
             if (widget.maxHeight != null && maxHeight != widget.maxHeight)
-              DataTable(
-                columnSpacing: 20,
-                showCheckboxColumn: false,
-                dataRowHeight: rowHeight,
-                rows: dts.getAllRows(),
-                headingRowHeight: headingRowHeight,
-                columns: columns,
-              )
-            else
-              SingleChildScrollView(
-                child: AtreeonPaginatedDataTable(
+              Container(
+                decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.green),
+                    ),
+                child: DataTable(
                   columnSpacing: 20,
                   showCheckboxColumn: false,
-                  showFirstLastButtons: true,
                   dataRowHeight: rowHeight,
-                  source: dts,
-                  headingRowHeight: headingRowHeight,
+                  rows: dts.getAllRows(),
+                  headingRowHeight: widget.headerHeight + (remainderHeight),
                   columns: columns,
-                  rowsPerPage: rowsPerPage,
+                ),
+              )
+            else
+              Container(
+                decoration: BoxDecoration(
+                    // border: Border.all(color: Colors.yellow),
+                    ),
+                child: SingleChildScrollView(
+                  child: AtreeonPaginatedDataTable(
+                    columnSpacing: 20,
+                    showCheckboxColumn: false,
+                    showFirstLastButtons: true,
+                    dataRowHeight: rowHeight,
+                    source: dts,
+                    headingRowHeight: widget.headerHeight + (remainderHeight / 2),
+                    columns: columns,
+                    rowsPerPage: rowsPerPage,
+                    fontSize: widget.fontSize,
+                    iconSize: 20,
+                    footerHeight: widget.footerHeight + (remainderHeight / 2),
+                  ),
                 ),
               ),
             widget.onCreateClick == null
@@ -228,104 +251,6 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DTS<T> extends DataTableSource {
-  final List<T> data;
-  final List<Field<T>> fields;
-  final void Function(T)? onRowClick;
-  final Field<T>? identityField;
-  final List<String> selectedIds;
-  final void Function(List<String>) onSelected;
-
-  DTS(
-    this.data,
-    this.fields,
-    this.onRowClick,
-    this.identityField,
-    this.selectedIds,
-    this.onSelected,
-  );
-
-  List<DataRow> getAllRows() {
-    return data.mapIndexed((i, e) => getRow(i)).toList();
-  }
-
-  DataRow getRow(int i) {
-    return DataRow.byIndex(
-      onSelectChanged: (x) {
-        onRowClick?.call(data[i]);
-      },
-      index: i,
-      cells: [
-        DataCell(Text('')),
-        ...fields
-            .map(
-              (e) => DataCell(
-                SingleChildScrollView(
-                  scrollDirection: Axis.vertical, //.horizontal
-                  child: Text(
-                    e.format != null ? e.format!(data[i]) : e.fieldDefinition(data[i]).toString(),
-                  ),
-                ),
-              ),
-            )
-            .toList(),
-        if (identityField != null) //
-          DataCell(
-            Checkbox(
-              value: selectedIds.contains(identityField!.fieldDefinition(data[i]).toString()),
-              onChanged: (x) {
-                var id = identityField!.fieldDefinition(data[i])!;
-                var selected = selectedIds //
-                    .where((element) => element != id)
-                    .toList();
-                onSelected([
-                  //need to remove the checked value too!
-                  ...selected.except([id.toString()]),
-                  if (x != null && x == true) //
-                    id.toString(),
-                ]);
-              },
-            ),
-          ),
-      ],
-    );
-  }
-
-  int get rowCount => data.length;
-
-  bool get isRowCountApproximate => false;
-
-  int get selectedRowCount => 0;
-}
-
-///If a height is passed it is a fixed height widget
-///
-///If height is null it is flexible (column(expanded))
-class FlexibleFixedHeightW extends StatelessWidget {
-  final Widget child;
-  final double? height;
-
-  const FlexibleFixedHeightW({
-    Key? key,
-    required this.child,
-    this.height,
-  }) : super(key: key);
-
-  Widget build(BuildContext context) {
-    if (height == null) //
-      return Column(
-        children: [
-          Expanded(child: child),
-        ],
-      );
-
-    return Container(
-      height: height,
-      child: child,
     );
   }
 }

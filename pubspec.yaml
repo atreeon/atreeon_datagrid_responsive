@@ -17,6 +17,7 @@ dependencies:
   diacritic: ">=0.1.3 <1.0.0"
   intl: ">=0.18.0 <1.0.0"
   atreeon_get_child_size: ">=0.1.1 <0.2.0"
+  adaptive_dialog: ^1.6.3
 
 dev_dependencies:
   test: ^1.18.2
