@@ -25,4 +25,4 @@ else
   exit 0
 fi
 
-echo "now please commit and push"
+echo "now please commit and push and remember to PUSH THE TAG!!!"
