@@ -2,17 +2,17 @@
 
 echo blah
 
-#cd terminalCommands || exit
-#./1_dry_run_release.sh
-#cd ../
-#
-#read -p "Do you want to publish atreeon_datagrid_responsive? (y/n): " choice
-#if [ "$choice" = "y" ]; then
-#  clear
-#  flutter pub publish
-#else
-#  exit 0
-#fi
+cd terminalCommands || exit
+./1_dry_run_release.sh
+cd ../
+
+read -p "Do you want to publish atreeon_datagrid_responsive? (y/n): " choice
+if [ "$choice" = "y" ]; then
+  clear
+  flutter pub publish
+else
+  exit 0
+fi
 
 
 versionLocal=$(grep 'version:' "pubspec.yaml" | awk '{print $2}')

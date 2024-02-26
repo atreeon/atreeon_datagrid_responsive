@@ -1,5 +1,4 @@
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
-import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/FilterBox.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/SortableButton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,6 +11,7 @@ class SortableFilterableW<T> extends StatelessWidget {
 
   final void Function(List<Field<T>>) onPressed;
   final void Function(List<Field<T>>) onChanged;
+
   // final bool showFilter;
   // final void Function() onShowFilter;
 

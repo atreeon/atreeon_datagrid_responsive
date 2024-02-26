@@ -401,6 +401,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
     }
 
     // FOOTER
+    // ignore: deprecated_member_use
     final TextStyle? footerTextStyle = themeData.textTheme.caption;
     final List<Widget> footerWidgets = <Widget>[];
     if (widget.onRowsPerPageChanged != null) {
@@ -497,7 +498,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
                   // These typographic styles aren't quite the regular ones. We pick the closest ones from the regular
                   // list and then tweak them appropriately.
                   // See https://material.io/design/components/data-tables.html#tables-within-cards
-                  style: _selectedRowCount > 0 ? themeData.textTheme.subtitle1!.copyWith(color: themeData.colorScheme.secondary) : themeData.textTheme.headline6!.copyWith(fontWeight: FontWeight.w400),
+                  style: _selectedRowCount > 0 ? themeData.textTheme.titleMedium!.copyWith(color: themeData.colorScheme.secondary) : themeData.textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400),
                   child: IconTheme.merge(
                     data: const IconThemeData(
                       opacity: 0.54,
@@ -532,7 +533,9 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
                   // Make sure no decoration is set on the DataTable
                   // from the theme, as its already wrapped in a Card.
                   decoration: const BoxDecoration(),
-                  dataRowHeight: widget.dataRowHeight,
+                  // dataRowHeight: widget.dataRowHeight,
+                  dataRowMinHeight: widget.dataRowHeight,
+                  dataRowMaxHeight: widget.dataRowHeight,
                   headingRowHeight: widget.headingRowHeight,
                   horizontalMargin: widget.horizontalMargin,
                   checkboxHorizontalMargin: widget.checkboxHorizontalMargin,

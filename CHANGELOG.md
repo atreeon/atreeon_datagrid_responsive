@@ -1,3 +1,7 @@
+## [0.2.0]
+    added additional heights and cleaned up the margins
+    the filter is now shown when you long press on a field header
+
 ## [0.1.0]
     updated dependencies
 

@@ -212,7 +212,8 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
                 child: DataTable(
                   columnSpacing: 20,
                   showCheckboxColumn: false,
-                  dataRowHeight: rowHeight,
+                  dataRowMaxHeight: rowHeight,
+                  dataRowMinHeight: rowHeight,
                   rows: dts.getAllRows(),
                   headingRowHeight: widget.headerHeight + (remainderHeight),
                   columns: columns,
