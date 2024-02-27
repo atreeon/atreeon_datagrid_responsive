@@ -28,7 +28,8 @@ class ResusableDatagridW<T> extends StatefulWidget {
 
   ///is used to identify the item for the selectedIds
   final Field<T>? identityFieldId;
-  final void Function(List<String>)? onSelect;
+  final void Function(List<String>)? onSelectHeaderButton;
+  final void Function(List<String>)? onCheckboxChange;
   final String selectName;
   final List<T>? selectedIds;
 
@@ -61,9 +62,10 @@ class ResusableDatagridW<T> extends StatefulWidget {
     this.onCreateClick,
     this.rowHeight = 30,
     this.identityFieldId = null,
-    this.onSelect,
+    this.onSelectHeaderButton,
     this.selectName = "select",
     this.selectedIds,
+    this.onCheckboxChange,
     this.maxHeight,
     this.fontSize = 12,
     this.columnSpacing = 10,
@@ -178,14 +180,14 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
             ),
           )
           .toList(),
-      if (widget.identityFieldId != null && widget.onSelect != null) //
+      if (widget.identityFieldId != null && widget.onSelectHeaderButton != null) //
         DataColumn(
           label: InkWell(
             child: Text(
               widget.selectName,
               style: TextStyle(fontSize: widget.fontSize, decoration: TextDecoration.underline),
             ),
-            onTap: () => widget.onSelect!(this.selectedIds),
+            onTap: () => widget.onSelectHeaderButton!(this.selectedIds),
           ),
         ),
     ];
@@ -198,6 +200,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
       selectedIds,
       (x) => setState(() => selectedIds = x),
       fontSize: widget.fontSize,
+      onCheckboxChange: widget.onCheckboxChange,
     );
 
     return FlexibleFixedHeightW(

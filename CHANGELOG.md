@@ -1,3 +1,6 @@
+## [0.4.0]
+    onCheckboxChange parameter to notify changes on checkbox changes
+
 ## [0.3.0]
     column spacing and margin params
 

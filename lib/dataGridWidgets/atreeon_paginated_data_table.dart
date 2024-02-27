@@ -431,6 +431,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
       ]);
     }
     footerWidgets.addAll(<Widget>[
+      // ElevatedButton(onPressed: () => print('blah'), child: Text('clear all')),
       Container(
         width: 32.0,
       ),

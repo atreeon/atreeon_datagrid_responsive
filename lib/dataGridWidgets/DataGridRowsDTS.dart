@@ -9,6 +9,7 @@ class DataGridRowsDTS<T> extends DataTableSource {
   final Field<T>? identityField;
   final List<String> selectedIds;
   final void Function(List<String>) onSelected;
+  final void Function(List<String>)? onCheckboxChange;
   final double fontSize;
 
   DataGridRowsDTS(
@@ -19,6 +20,7 @@ class DataGridRowsDTS<T> extends DataTableSource {
     this.selectedIds,
     this.onSelected, {
     required this.fontSize,
+    this.onCheckboxChange,
   });
 
   List<DataRow> getAllRows() {
@@ -54,12 +56,15 @@ class DataGridRowsDTS<T> extends DataTableSource {
                 var selected = selectedIds //
                     .where((element) => element != id)
                     .toList();
-                onSelected([
-                  //need to remove the checked value too!
+                var newSelection = [
                   ...selected.except([id.toString()]),
                   if (x != null && x == true) //
                     id.toString(),
-                ]);
+                ];
+
+                onCheckboxChange?.call(newSelection);
+
+                onSelected(newSelection);
               },
             ),
           ),
