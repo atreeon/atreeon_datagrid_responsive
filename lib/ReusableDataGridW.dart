@@ -22,7 +22,7 @@ class ResusableDatagridW<T> extends StatefulWidget {
   final double rowHeight;
   final double headerHeight;
   final double footerHeight;
-  final void Function(T)? onRowClick;
+  final void Function(T, List<String>)? onRowClick;
   final void Function()? onCreateClick;
   final DateTime? lastSaveDate;
 
@@ -30,6 +30,7 @@ class ResusableDatagridW<T> extends StatefulWidget {
   final Field<T>? identityFieldId;
   final void Function(List<String>)? onSelectHeaderButton;
   final void Function(List<String>)? onCheckboxChange;
+  final bool Function(List<String>)? onCheckRequirement;
   final String selectName;
   final List<T>? selectedIds;
 
@@ -66,6 +67,7 @@ class ResusableDatagridW<T> extends StatefulWidget {
     this.selectName = "select",
     this.selectedIds,
     this.onCheckboxChange,
+    this.onCheckRequirement,
     this.maxHeight,
     this.fontSize = 12,
     this.columnSpacing = 10,
@@ -202,6 +204,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
       (x) => setState(() => selectedIds = x),
       fontSize: widget.fontSize,
       onCheckboxChange: widget.onCheckboxChange,
+      onCheckRequirement: widget.onCheckRequirement,
     );
 
     return FlexibleFixedHeightW(
