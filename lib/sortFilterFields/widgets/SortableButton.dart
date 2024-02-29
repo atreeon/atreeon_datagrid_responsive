@@ -33,6 +33,7 @@ class SortableButton<T> extends StatelessWidget {
     this.fields,
     this.labelId,
     this.onPressed, {
+    super.key,
     this.buttonText,
     required this.fontSize,
     // required void Function(List<Field<T>>) onChanged,
@@ -97,14 +98,14 @@ class SortableButton<T> extends StatelessWidget {
                       onPressed(newFields);
                       Navigator.of(context).pop();
                     },
-                    child: Text('Clear This Filter')),
+                    child: const Text('Clear This Filter')),
                 ElevatedButton(
                     onPressed: () {
                       var newFields = fields.map((e) => e.copyWithFilter(e.filter!.clear())).toList();
                       onPressed(newFields);
                       Navigator.of(context).pop();
                     },
-                    child: Text('Clear All Filters')),
+                    child: const Text('Clear All Filters')),
               ],
             ),
           ),

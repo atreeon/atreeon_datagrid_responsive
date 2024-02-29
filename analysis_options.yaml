@@ -2,3 +2,5 @@
 linter:
   rules:
     camel_case_types: false
+    prefer_const_constructors: true
+    use_key_in_widget_constructors: true

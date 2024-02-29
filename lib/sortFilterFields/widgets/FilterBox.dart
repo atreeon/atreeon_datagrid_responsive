@@ -26,8 +26,9 @@ class FilterBox<T> extends StatefulWidget {
     this.fields,
     this.labelId,
     this.onChange,
-    this.fontSize,
-  );
+    this.fontSize, {
+    super.key,
+  });
 
   _FilterBoxState createState() => _FilterBoxState<T>();
 }
@@ -149,7 +150,7 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
             child: TextField(
               controller: controller1,
               keyboardType: keyboardType,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 isDense: true,
               ),
               style: TextStyle(fontSize: widget.fontSize),
@@ -163,7 +164,7 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
                 child: TextField(
                   controller: controller1,
                   keyboardType: keyboardType,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     isDense: true,
                   ),
                   style: TextStyle(fontSize: widget.fontSize),
@@ -177,7 +178,7 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
                 child: TextField(
                   controller: controller2,
                   keyboardType: keyboardType,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     isDense: true,
                   ),
                   style: TextStyle(fontSize: widget.fontSize),

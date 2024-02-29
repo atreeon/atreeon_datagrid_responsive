@@ -80,7 +80,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
   var remainderHeight = 0.0;
 
   ///used to hold the widget size so we always have that value if recalculating the size
-  var widgetSize = Size(100, 400);
+  var widgetSize = const Size(100, 400);
   var selectedIds = <String>[];
 
   late double? maxHeight;
@@ -111,9 +111,10 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
     super.initState();
   }
 
+  //todo: this is not working, we shouldn't be reseting
   void didUpdateWidget(ResusableDatagridW<T> oldWidget) {
-    _init();
     if (widget.lastSaveDate != oldWidget.lastSaveDate || widget.data.length != oldWidget.data.length) {
+      _init();
       selectedIds = [];
     }
 
@@ -164,7 +165,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
 
   Widget build(BuildContext context) {
     if (widget.data.length == 0) //
-      return Text("no data");
+      return const Text("no data");
 
     var columns = [
       ...widget.fields
@@ -214,7 +215,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
             //if maxHeight is set & maxHeight hasn't been reset because the number of children is less than max per rows
             if (widget.maxHeight != null && maxHeight != widget.maxHeight)
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     // border: Border.all(color: Colors.green),
                     ),
                 child: DataTable(
@@ -231,7 +232,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
               )
             else
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     // border: Border.all(color: Colors.yellow),
                     ),
                 child: SingleChildScrollView(
@@ -256,7 +257,7 @@ class _ResusableDatagridW<T> extends State<ResusableDatagridW<T>> {
                 : Align(
                     child: ElevatedButton(
                       onPressed: () => widget.onCreateClick!(),
-                      child: Text('CREATE NEW'),
+                      child: const Text('CREATE NEW'),
                     ),
                     alignment: Alignment.bottomLeft,
                   ),
