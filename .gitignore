@@ -1,45 +1,70 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
-
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# ---- Dart / Flutter ----
 .dart_tool/
+.packages
+.flutter-plugins
 .flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
-/coverage/
+.melos_tool/
 
-# Symbolication related
-app.*.symbols
+# Generated code
+*.g.dart
+*.morphy.dart
 
-# Obfuscation related
-app.*.map.json
+# Build outputs
+build/
+**/build/
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# IDE / Editors
+.idea/
+.vscode/
+*.iml
+
+# Android
+**/android/.gradle/
+**/android/local.properties
+**/android/**/generated/
+**/android/key.properties
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+
+# iOS / macOS
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/ephemeral/
+**/ios/DerivedData/
+**/ios/*.xcuserdatad/
+**/ios/*.xcworkspace/xcuserdata/
+**/macos/Pods/
+**/macos/Flutter/ephemeral/
+
+# Web
+**/web/.dart_tool/
+**/web/.firebase/
+
+# Linux / Windows
+**/linux/flutter/
+**/windows/flutter/
+
+# Test artifacts
+**/test/**/failures/
+
+# Example app lockfiles (OK to ignore)
+example/pubspec.lock
+example/ios/Podfile.lock
+example/android/gradle.properties
+example/android/local.properties
+
+# Miscellaneous
+.DS_Store
+*.log
+*.tmp
+coverage/
+
+# Package lockfiles (Flutter convention: ignore in packages)
+pubspec.lock
+Podfile.lock
+
+# ---- Keep these ----
+!example/lib/**
+!example/pubspec.yaml
+!example/assets/**
