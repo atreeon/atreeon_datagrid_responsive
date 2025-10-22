@@ -1,5 +1,6 @@
 import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
-import 'package:atreeon_datagrid_responsive/common.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -31,11 +32,15 @@ class _DataGridDateDemoState extends State<DataGridDateDemo> {
               Field((x) => x.key, "key", FilterFieldString(), format: (x) => DateFormat('dd MMM yy').format(x.key)),
               Field((x) => x.value, "value", FilterFieldString()),
             ],
-            onRowClick: (x) => print(x.toString()),
+            onRowClick: (x, y) => print(x.toString()),
             lastSaveDate: dateUpdated,
-            onSelect: (x) => //
+            onSelectHeaderButton: (x) => //
                 print(x.toString()),
             selectName: "Delete",
+            fontSize: 12,
+            headerHeight: 20,
+            footerHeight: 20,
+            rowHeight: 25,
           ),
         ],
       ),

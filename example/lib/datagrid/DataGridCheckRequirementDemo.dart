@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
@@ -21,85 +23,78 @@ final data = {
   // 11: "Don't unlock a ColdTurkeyBlock to get to one site or app, easier to remove & readd",
   // 12: "Sleep early Sunday night and prepare to work on app first thing",
   // 13: "End of day check Trello lunch, if nothing requiring work laptop then put a break for next day",
-  // 14: "Factor in the things that might go wrong",
-  // 15: "Keep relaxed",
-  // 16: "Meditate daily",
+  14: "Factor in the things that might go wrong",
+  15: "Keep relaxed",
+  16: "Meditate daily",
   // 17: "Nothing before work",
-  // 18: "Get to work early",
+  18: "Get to work early",
   // 19: "Check email after 4pm only",
-  // 20: "Discipline is freedom",
-  // 21: "Start work early",
+  20: "Discipline is freedom",
+  21: "Start work early",
   // 22: "Set timers for breaks",
-  // 23: "Keep simple. More logic is more work & maintenance",
+  23: "Keep simple. More logic is more work & maintenance",
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
-class DataGridWrapLongTextDemo extends StatefulWidget {
+class DataGridCheckRequirementDemo extends StatefulWidget {
   @override
-  _DataGridWrapLongTextDemoState createState() => _DataGridWrapLongTextDemoState();
+  _DataGridCheckRequirementDemoState createState() => _DataGridCheckRequirementDemoState();
 }
 
-class _DataGridWrapLongTextDemoState extends State<DataGridWrapLongTextDemo> {
+class _DataGridCheckRequirementDemoState extends State<DataGridCheckRequirementDemo> {
   var dateUpdated = DateTime.now();
+
+  //get a random value between 1 and 1000 using random function in Dart
+  var myValue = Random().nextInt(1000);
+
+  var selected = data.where((element) => [1, 2, 4, 20].contains(element.key)).toList();
 
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Text('This demo is to show that the text will wrap inside the cell. Also it is possible to scroll each cell.'),
-          Container(
+          Text('This demo is to show that we can add a requirement in to the oncheck event.'),
+          TextButton(
+            onPressed: () => setState(() => //
+                myValue = Random().nextInt(1000)),
+            child: Text('myValue: $myValue'),
+          ),
+          Expanded(
             // height: 250,
-            decoration: BoxDecoration(
-              // border: Border.all(color: Colors.black),
-            ),
+            // decoration: BoxDecoration(
+            // border: Border.all(color: Colors.black),
+            // ),
             child: ResusableDatagridW<MapEntry<int, String>>(
-              maxHeight: 250,
+              // maxHeight: 250,
               data: data,
               fields: [
                 Field((x) => x.key, "key", FilterFieldNum()),
                 Field((x) => x.value, "value", FilterFieldString()),
               ],
-              onRowClick: (x,y) => print(x.toString()),
+              onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
-              onSelectHeaderButton: (x) => //
-                  print(x.toString()),
-              selectName: "Delete",
+              identityFieldId: Field((x) => x.key, "id", FilterFieldNum()),
+              selectedIds: selected,
+              onSelectHeaderButton: (x) {
+                setState(() {
+                  selected = [];
+                  dateUpdated = DateTime.now();
+                });
+              },
+              onCheckboxChange: (x) {
+                print('from demo:' + x.toString());
+                return x;
+              },
+              onCheckRequirement: (x) {
+                print(x.length);
+                return x.length < 6;
+              },
+              selectName: "Clear",
               fontSize: 12,
               headerHeight: 20,
               footerHeight: 20,
               rowHeight: 25,
             ),
           ),
-          // Row(
-          //   children: [
-          //     TextButton(
-          //       onPressed: () {
-          //         setState(() {
-          //           data = smallList;
-          //           dateUpdated = DateTime.now();
-          //         });
-          //       },
-          //       child: Text("small list"),
-          //     ),
-          //     TextButton(
-          //       onPressed: () {
-          //         setState(() {
-          //           data = smallList + largeList;
-          //           dateUpdated = DateTime.now();
-          //         });
-          //       },
-          //       child: Text("full list"),
-          //     ),
-          //     TextButton(
-          //       onPressed: () {
-          //         setState(() {
-          //           data = [];
-          //           dateUpdated = DateTime.now();
-          //         });
-          //       },
-          //       child: Text("no data"),
-          //     )
-          //   ],
-          // )
         ],
       ),
     );

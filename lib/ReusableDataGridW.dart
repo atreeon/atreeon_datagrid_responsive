@@ -29,7 +29,7 @@ class ResusableDatagridW<T> extends StatefulWidget {
   ///is used to identify the item for the selectedIds
   final Field<T>? identityFieldId;
   final void Function(List<String>)? onSelectHeaderButton;
-  final void Function(List<String>)? onCheckboxChange;
+  final List<String>? Function(List<String>)? onCheckboxChange;
   final bool Function(List<String>)? onCheckRequirement;
   final String selectName;
   final List<T>? selectedIds;

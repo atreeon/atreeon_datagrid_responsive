@@ -1,4 +1,4 @@
-import 'package:atreeon_datagrid_responsive/atreeon_paginated_data_table.dart';
+import 'package:atreeon_datagrid_responsive/dataGridWidgets/atreeon_paginated_data_table.dart';
 import 'package:flutter/material.dart';
 
 class PaginatedDataTableDefaultExample extends StatefulWidget {
@@ -17,6 +17,9 @@ class _PaginatedDataTableDefaultExampleState extends State<PaginatedDataTableDef
           DataColumn(label: Text('Id')),
           DataColumn(label: Text('Text')),
         ],
+        fontSize: 12,
+        iconSize: 20,
+        footerHeight: 30,
       ),
     );
   }

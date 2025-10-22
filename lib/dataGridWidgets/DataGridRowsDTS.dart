@@ -9,7 +9,7 @@ class DataGridRowsDTS<T> extends DataTableSource {
   final Field<T>? identityField;
   final List<String> selectedIds;
   final void Function(List<String>) onSelected;
-  final void Function(List<String>)? onCheckboxChange;
+  final List<String>? Function(List<String>)? onCheckboxChange;
   final bool Function(List<String>)? onCheckRequirement;
   final double fontSize;
 
@@ -30,6 +30,7 @@ class DataGridRowsDTS<T> extends DataTableSource {
   }
 
   DataRow getRow(int i) {
+    //need to remove this duplication
     return DataRow.byIndex(
       onSelectChanged: (x) {
         if (onRowClick != null) //
@@ -38,18 +39,20 @@ class DataGridRowsDTS<T> extends DataTableSource {
         var id = identityField!.fieldDefinition(data[i])!;
 
         if (selectedIds.contains(id.toString())) {
+          //remove
           var selected = selectedIds //
               .where((element) => element != id.toString())
               .toList();
-          onCheckboxChange?.call(selected);
-          onSelected(selected);
+          var selection3 = onCheckboxChange?.call(selected) ?? selected;
+          onSelected(selection3);
         } else {
+          //add
           if (onCheckRequirement != null && !onCheckRequirement!(selectedIds)) //
             return;
 
           var newSelection = [...selectedIds, id.toString()];
-          onCheckboxChange?.call(newSelection);
-          onSelected(newSelection);
+          var selection3 = onCheckboxChange?.call(newSelection) ?? newSelection;
+          onSelected(selection3);
         }
       },
       index: i,
@@ -78,15 +81,15 @@ class DataGridRowsDTS<T> extends DataTableSource {
                   var selected = selectedIds //
                       .where((element) => element != id.toString())
                       .toList();
-                  onCheckboxChange?.call(selected);
-                  onSelected(selected);
+                  var selection3 = onCheckboxChange?.call(selected) ?? selected;
+                  onSelected(selection3);
                 } else {
                   if (onCheckRequirement != null && !onCheckRequirement!(selectedIds)) //
                     return;
 
                   var newSelection = [...selectedIds, id.toString()];
-                  onCheckboxChange?.call(newSelection);
-                  onSelected(newSelection);
+                  var selection3 = onCheckboxChange?.call(newSelection) ?? newSelection;
+                  onSelected(selection3);
                 }
               },
             ),

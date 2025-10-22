@@ -21,36 +21,36 @@ final data = {
   // 11: "Don't unlock a ColdTurkeyBlock to get to one site or app, easier to remove & readd",
   // 12: "Sleep early Sunday night and prepare to work on app first thing",
   // 13: "End of day check Trello lunch, if nothing requiring work laptop then put a break for next day",
-  // 14: "Factor in the things that might go wrong",
-  // 15: "Keep relaxed",
-  // 16: "Meditate daily",
+  14: "Factor in the things that might go wrong",
+  15: "Keep relaxed",
+  16: "Meditate daily",
   // 17: "Nothing before work",
-  // 18: "Get to work early",
+  18: "Get to work early",
   // 19: "Check email after 4pm only",
-  // 20: "Discipline is freedom",
-  // 21: "Start work early",
+  20: "Discipline is freedom",
+  21: "Start work early",
   // 22: "Set timers for breaks",
-  // 23: "Keep simple. More logic is more work & maintenance",
+  23: "Keep simple. More logic is more work & maintenance",
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
-class DataGridWrapLongTextDemo extends StatefulWidget {
+class DataGridPublicDemo extends StatefulWidget {
   @override
-  _DataGridWrapLongTextDemoState createState() => _DataGridWrapLongTextDemoState();
+  _DataGridPublicDemoState createState() => _DataGridPublicDemoState();
 }
 
-class _DataGridWrapLongTextDemoState extends State<DataGridWrapLongTextDemo> {
+class _DataGridPublicDemoState extends State<DataGridPublicDemo> {
   var dateUpdated = DateTime.now();
 
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Text('This demo is to show that the text will wrap inside the cell. Also it is possible to scroll each cell.'),
+          Text('Public demo for showing off purposes.'),
           Container(
             // height: 250,
             decoration: BoxDecoration(
-              // border: Border.all(color: Colors.black),
-            ),
+                // border: Border.all(color: Colors.black),
+                ),
             child: ResusableDatagridW<MapEntry<int, String>>(
               maxHeight: 250,
               data: data,
@@ -66,7 +66,7 @@ class _DataGridWrapLongTextDemoState extends State<DataGridWrapLongTextDemo> {
               fontSize: 12,
               headerHeight: 20,
               footerHeight: 20,
-              rowHeight: 25,
+              rowHeight: 20,
             ),
           ),
           // Row(

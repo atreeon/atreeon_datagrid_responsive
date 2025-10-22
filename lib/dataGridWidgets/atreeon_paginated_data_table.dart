@@ -402,7 +402,7 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
 
     // FOOTER
     // ignore: deprecated_member_use
-    final TextStyle? footerTextStyle = themeData.textTheme.caption;
+    final TextStyle? footerTextStyle = themeData.textTheme.labelSmall;
     final List<Widget> footerWidgets = <Widget>[];
     if (widget.onRowsPerPageChanged != null) {
       final List<Widget> availableRowsPerPage = widget.availableRowsPerPage.where((int value) => value <= _rowCount || value == widget.rowsPerPage).map<DropdownMenuItem<int>>((int value) {
