@@ -1,6 +1,29 @@
 #include: package:flutter_lints/flutter.yaml
 linter:
   rules:
+    #    use_key_in_widget_constructors: false
+    #    library_private_types_in_public_api: false
     camel_case_types: false
-    prefer_const_constructors: true
-    use_key_in_widget_constructors: true
+    annotate_overrides: false
+    file_names: false
+    prefer_const_constructors: false
+    use_key_in_widget_constructors: false
+    no_leading_underscores_for_local_identifiers: false
+    avoid_init_to_null: false
+    avoid_print: false
+    curly_braces_in_flow_control_structures: false
+
+analyzer:
+  exclude:
+    - .dart_tool/**
+    - build/**
+    - ios/**
+    - android/**
+    - web/build/**
+    - lib/**.g.dart
+    - lib/**.freezed.dart
+    - lib/**.morphy.dart
+
+formatter:
+  trailing_commas: preserve
+  page_width: 1000
