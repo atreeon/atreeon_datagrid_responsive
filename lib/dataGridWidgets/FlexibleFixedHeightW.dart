@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-///If a height is passed it is a fixed height widget
-///
-///If height is null it is flexible (column(expanded))
+///If a height is provided the widget constrains the child to that size.
+///If height is null the widget returns an [Expanded] so the child fills the available space.
 class FlexibleFixedHeightW extends StatelessWidget {
   final Widget child;
   final double? height;
@@ -15,13 +14,10 @@ class FlexibleFixedHeightW extends StatelessWidget {
 
   Widget build(BuildContext context) {
     if (height == null) //
-      return Column(
-        children: [
-          Expanded(child: child),
-        ],
-      );
+      return Expanded(child: child);
 
-    return Container(
+    // Constrain the child to a fixed height using SizedBox rather than Container for clarity.
+    return SizedBox(
       height: height,
       child: child,
     );
