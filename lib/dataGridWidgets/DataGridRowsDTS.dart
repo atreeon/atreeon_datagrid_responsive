@@ -8,6 +8,8 @@ class DataGridRowsDTS<T> extends DataTableSource {
   final void Function(T, List<String>)? onRowClick;
   final Field<T>? identityField;
   final List<String> selectedIds;
+
+  ///Notify listeners of the new selection when an item is added.
   final void Function(List<String>) onSelected;
   final List<String>? Function(List<String>)? onCheckboxChange;
   final bool Function(List<String>)? onCheckRequirement;
@@ -30,30 +32,13 @@ class DataGridRowsDTS<T> extends DataTableSource {
   }
 
   DataRow getRow(int i) {
-    //need to remove this duplication
     return DataRow.byIndex(
       onSelectChanged: (x) {
         if (onRowClick != null) //
           onRowClick?.call(data[i], selectedIds);
 
-        var id = identityField!.fieldDefinition(data[i])!;
-
-        if (selectedIds.contains(id.toString())) {
-          //remove
-          var selected = selectedIds //
-              .where((element) => element != id.toString())
-              .toList();
-          var selection3 = onCheckboxChange?.call(selected) ?? selected;
-          onSelected(selection3);
-        } else {
-          //add
-          if (onCheckRequirement != null && !onCheckRequirement!(selectedIds)) //
-            return;
-
-          var newSelection = [...selectedIds, id.toString()];
-          var selection3 = onCheckboxChange?.call(newSelection) ?? newSelection;
-          onSelected(selection3);
-        }
+        final id = identityField!.fieldDefinition(data[i])!.toString();
+        _toggleSelection(id);
       },
       index: i,
       cells: [
@@ -75,22 +60,8 @@ class DataGridRowsDTS<T> extends DataTableSource {
             Checkbox(
               value: selectedIds.contains(identityField!.fieldDefinition(data[i]).toString()),
               onChanged: (x) {
-                var id = identityField!.fieldDefinition(data[i])!;
-
-                if (selectedIds.contains(id.toString())) {
-                  var selected = selectedIds //
-                      .where((element) => element != id.toString())
-                      .toList();
-                  var selection3 = onCheckboxChange?.call(selected) ?? selected;
-                  onSelected(selection3);
-                } else {
-                  if (onCheckRequirement != null && !onCheckRequirement!(selectedIds)) //
-                    return;
-
-                  var newSelection = [...selectedIds, id.toString()];
-                  var selection3 = onCheckboxChange?.call(newSelection) ?? newSelection;
-                  onSelected(selection3);
-                }
+                final id = identityField!.fieldDefinition(data[i])!.toString();
+                _toggleSelection(id);
               },
             ),
           ),
@@ -103,4 +74,23 @@ class DataGridRowsDTS<T> extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   int get selectedRowCount => 0;
+
+  /// Toggles the selection state for the row identified by [id] and notifies listeners.
+  void _toggleSelection(String id) {
+    if (selectedIds.contains(id)) {
+      final updatedSelection = selectedIds.where((element) => element != id).toList();
+      final normalizedSelection = onCheckboxChange?.call(updatedSelection) ?? updatedSelection;
+      onSelected(normalizedSelection);
+      return;
+    }
+
+    if (onCheckRequirement != null && !onCheckRequirement!(selectedIds)) //
+      return;
+
+    // Build the new selection that includes the provided identifier.
+    final updatedSelection = [...selectedIds, id];
+    // Allow checkbox hooks to transform the addition before notifying listeners.
+    final normalizedSelection = onCheckboxChange?.call(updatedSelection) ?? updatedSelection;
+    onSelected(normalizedSelection);
+  }
 }
