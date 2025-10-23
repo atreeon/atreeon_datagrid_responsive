@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:atreeon_datagrid_responsive/dataGridWidgets/DataGridRowsDTS.dart';
 import 'package:atreeon_datagrid_responsive/dataGridWidgets/FlexibleFixedHeightW.dart';
 import 'package:atreeon_datagrid_responsive/dataGridWidgets/atreeon_paginated_data_table.dart';
@@ -123,6 +125,9 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
   /// Cached data set with filters and sorts applied.
   late Iterable<T> data;
 
+  /// Indicates when a constrained max height requires rendering the static [DataTable] variant.
+  bool get _shouldUseStaticTable => widget.maxHeight != null && maxHeight != widget.maxHeight;
+
   /// Applies filters, sorts, and selection state based on the latest widget
   /// configuration.
   void _init() {
@@ -170,11 +175,13 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
   void onSizeChange(Size size) {
     setState(() {
       if (maxHeight == null) {
-        rowsPerPage = size.height ~/ rowHeight - 2;
+        // Clamp the dynamically computed rows per page so short viewports still render at least one row.
+        rowsPerPage = math.max(1, size.height ~/ rowHeight - 2);
         widgetSize = size;
       } else {
         final rowsHeight = widget.maxHeight! - widget.footerHeight - widget.headerHeight;
-        rowsPerPage = rowsHeight ~/ rowHeight;
+        // Guarantee a positive page size when constrained by max height to avoid divide-by-zero errors and layout collapse.
+        rowsPerPage = math.max(1, rowsHeight ~/ rowHeight);
         final padding = (widget.footerHeight + widget.headerHeight + 2) / rowsPerPage;
         remainderHeight = widget.maxHeight! - (rowsPerPage * (rowHeight + padding));
 
@@ -236,7 +243,7 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
         onChange: onSizeChange,
         child: Stack(
           children: [
-            if (widget.maxHeight != null && maxHeight != widget.maxHeight)
+            if (_shouldUseStaticTable)
               Container(
                 decoration: const BoxDecoration(),
                 child: DataTable(
