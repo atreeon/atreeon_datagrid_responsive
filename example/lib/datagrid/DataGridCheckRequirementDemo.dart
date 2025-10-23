@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +36,8 @@ final data = {
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
 class DataGridCheckRequirementDemo extends StatefulWidget {
+  const DataGridCheckRequirementDemo({super.key});
+
   @override
   _DataGridCheckRequirementDemoState createState() => _DataGridCheckRequirementDemoState();
 }
@@ -48,22 +50,21 @@ class _DataGridCheckRequirementDemoState extends State<DataGridCheckRequirementD
 
   var selected = data.where((element) => [1, 2, 4, 20].contains(element.key)).toList();
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           Text('This demo is to show that we can add a requirement in to the oncheck event.'),
           TextButton(
-            onPressed: () => setState(() => //
-                myValue = Random().nextInt(1000)),
+            onPressed: () => setState(
+              () => //
+                  myValue = Random().nextInt(1000),
+            ),
             child: Text('myValue: $myValue'),
           ),
           Expanded(
-            // height: 250,
-            // decoration: BoxDecoration(
-            // border: Border.all(color: Colors.black),
-            // ),
-            child: ResusableDatagridW<MapEntry<int, String>>(
+            child: ReusableDataGrid<MapEntry<int, String>>(
               // maxHeight: 250,
               data: data,
               fields: [

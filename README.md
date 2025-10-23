@@ -17,7 +17,8 @@ class SimpleDemo extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ResusableDatagridW<Item>(
+            // codex: Swap in the renamed ReusableDataGrid widget to reflect the updated package API in documentation.
+            child: ReusableDataGrid<Item>(
               data: originalData,
               fields: [
                 Field<Item>((x) => x.name, "name", FilterFieldString()),
@@ -25,7 +26,8 @@ class SimpleDemo extends StatelessWidget {
                 Field<Item>((x) => x.price, "price", FilterFieldNum()),
                 Field<Item>((x) => x.storage, "storage", FilterFieldNum()),
               ],
-              onRowClick: (x) => print(x.toString()),
+              // codex: Update the callback signature to include the selected identifiers argument expected by the widget.
+              onRowClick: (item, selectedIds) => print(item.toString()),
               lastSaveDate: null,
             ),
           ),

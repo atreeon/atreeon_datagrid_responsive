@@ -1,19 +1,14 @@
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-final data = {
-  DateTime(2022, 12, 20): 1,
-  DateTime(2022, 12, 12): 2,
-  DateTime(2022, 11, 15): 3,
-  DateTime(2022, 11, 3): 4,
-  DateTime(2022, 11, 01): 5,
-  DateTime(2022, 10, 24): 6,
-}.entries.map((e) => MapEntry(e.key, e.value)).toList();
+final data = {DateTime(2022, 12, 20): 1, DateTime(2022, 12, 12): 2, DateTime(2022, 11, 15): 3, DateTime(2022, 11, 3): 4, DateTime(2022, 11, 01): 5, DateTime(2022, 10, 24): 6}.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
 class DataGridDateDemo extends StatefulWidget {
+  const DataGridDateDemo({super.key});
+
   @override
   _DataGridDateDemoState createState() => _DataGridDateDemoState();
 }
@@ -21,11 +16,12 @@ class DataGridDateDemo extends StatefulWidget {
 class _DataGridDateDemoState extends State<DataGridDateDemo> {
   var dateUpdated = DateTime.now();
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          ResusableDatagridW<MapEntry<DateTime, int>>(
+          ReusableDataGrid<MapEntry<DateTime, int>>(
             maxHeight: 300,
             data: data,
             fields: [
@@ -34,8 +30,9 @@ class _DataGridDateDemoState extends State<DataGridDateDemo> {
             ],
             onRowClick: (x, y) => print(x.toString()),
             lastSaveDate: dateUpdated,
-            onSelectHeaderButton: (x) => //
-                print(x.toString()),
+            onSelectHeaderButton:
+                (x) => //
+                    print(x.toString()),
             selectName: "Delete",
             fontSize: 12,
             headerHeight: 20,

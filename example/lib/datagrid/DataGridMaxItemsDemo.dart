@@ -1,4 +1,4 @@
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +34,9 @@ final data = {
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
 class DataGridMaxItemsDemo extends StatefulWidget {
+
+  const DataGridMaxItemsDemo({super.key});
+
   @override
   _DataGridMaxItemsDemoState createState() => _DataGridMaxItemsDemoState();
 }
@@ -43,6 +46,8 @@ class _DataGridMaxItemsDemoState extends State<DataGridMaxItemsDemo> {
 
   var selected = data.where((element) => [1, 2, 4, 20].contains(element.key)).toList();
 
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -53,19 +58,24 @@ class _DataGridMaxItemsDemoState extends State<DataGridMaxItemsDemo> {
             // decoration: BoxDecoration(
             // border: Border.all(color: Colors.black),
             // ),
-            child: ResusableDatagridW<MapEntry<int, String>>(
+
+            child: ReusableDataGrid<MapEntry<int, String>>(
               // maxHeight: 250,
               data: data,
+
               fields: [
                 Field((x) => x.key, "key", FilterFieldNum()),
                 Field((x) => x.value, "value", FilterFieldString()),
               ],
+
               onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
+
               identityFieldId: Field((x) => x.key, "id", FilterFieldNum()),
               selectedIds: selected,
-              onSelectHeaderButton: (x) => //
-                  setState(() => selected = []),
+              onSelectHeaderButton:
+                  (x) => //
+                      setState(() => selected = []),
               onCheckboxChange: (x) {
                 if (x.length > 5) {
                   print('max number of 5 items: $x');

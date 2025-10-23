@@ -1,4 +1,4 @@
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +34,8 @@ final data = {
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
 class DataGridHighlightedRowsDemo extends StatefulWidget {
+  const DataGridHighlightedRowsDemo({super.key});
+
   @override
   _DataGridHighlightedRowsDemoState createState() => _DataGridHighlightedRowsDemoState();
 }
@@ -43,6 +45,7 @@ class _DataGridHighlightedRowsDemoState extends State<DataGridHighlightedRowsDem
 
   var selected = data.where((element) => [1, 2, 4, 20].contains(element.key)).toList();
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -53,19 +56,20 @@ class _DataGridHighlightedRowsDemoState extends State<DataGridHighlightedRowsDem
             // decoration: BoxDecoration(
             // border: Border.all(color: Colors.black),
             // ),
-            child: ResusableDatagridW<MapEntry<int, String>>(
+            child: ReusableDataGrid<MapEntry<int, String>>(
               // maxHeight: 250,
               data: data,
               fields: [
                 Field((x) => x.key, "key", FilterFieldNum()),
                 Field((x) => x.value, "value", FilterFieldString()),
               ],
-              onRowClick: (x,y) => print(x.toString()),
+              onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
               identityFieldId: Field((x) => x.key, "id", FilterFieldNum()),
               selectedIds: selected,
-              onSelectHeaderButton: (x) => //
-                  setState(() => selected = []),
+              onSelectHeaderButton:
+                  (x) => //
+                      setState(() => selected = []),
               onCheckboxChange: (x) {
                 print('from demo:' + x.toString());
                 return null;

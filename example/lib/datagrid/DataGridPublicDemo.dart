@@ -1,4 +1,4 @@
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +34,9 @@ final data = {
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
 class DataGridPublicDemo extends StatefulWidget {
+
+  const DataGridPublicDemo({super.key});
+
   @override
   _DataGridPublicDemoState createState() => _DataGridPublicDemoState();
 }
@@ -41,6 +44,8 @@ class DataGridPublicDemo extends StatefulWidget {
 class _DataGridPublicDemoState extends State<DataGridPublicDemo> {
   var dateUpdated = DateTime.now();
 
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -49,19 +54,23 @@ class _DataGridPublicDemoState extends State<DataGridPublicDemo> {
           Container(
             // height: 250,
             decoration: BoxDecoration(
-                // border: Border.all(color: Colors.black),
-                ),
-            child: ResusableDatagridW<MapEntry<int, String>>(
+              // border: Border.all(color: Colors.black),
+            ),
+
+            child: ReusableDataGrid<MapEntry<int, String>>(
               maxHeight: 250,
               data: data,
+
               fields: [
                 Field((x) => x.key, "key", FilterFieldNum()),
                 Field((x) => x.value, "value", FilterFieldString()),
               ],
-              onRowClick: (x,y) => print(x.toString()),
+
+              onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
-              onSelectHeaderButton: (x) => //
-                  print(x.toString()),
+              onSelectHeaderButton:
+                  (x) => //
+                      print(x.toString()),
               selectName: "Delete",
               fontSize: 12,
               headerHeight: 20,

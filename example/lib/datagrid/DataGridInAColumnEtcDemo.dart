@@ -1,4 +1,4 @@
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
@@ -20,20 +20,24 @@ class Item {
 enum Item$ { name, ram, price, storage }
 
 var originalData = List<Item>.generate(
-    30,
-    (i) => //
-        Item("id: $i", i * 2, i ~/ 2, i + 500));
+  30,
+  (i) => //
+      Item("id: $i", i * 2, i ~/ 2, i + 500),
+);
 
 var ramLookup = {64: "sixtyfour", 1: "one", 128: "1two8"};
 
 class DataGridInAColumnEtcDemo extends StatelessWidget {
+  const DataGridInAColumnEtcDemo({super.key});
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Text("Raw Database Word"),
-            ResusableDatagridW<Item>(
+            ReusableDataGrid<Item>(
               maxHeight: 300,
               data: originalData,
               fields: [
@@ -42,12 +46,11 @@ class DataGridInAColumnEtcDemo extends StatelessWidget {
                 Field<Item>((x) => x.price, "price", FilterFieldNum()),
                 Field<Item>((x) => x.storage, "storage", FilterFieldNum()),
               ],
-              onRowClick: (x,y) => print(x.toString()),
+              onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: null,
               fontSize: 12,
               headerHeight: 20,
               footerHeight: 20,
-
             ),
           ],
         ),

@@ -1,4 +1,4 @@
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,8 @@ final data = {
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
 class DataGridHeightsDemo extends StatefulWidget {
+  const DataGridHeightsDemo({super.key});
+
   @override
   _DataGridHeightsDemoState createState() => _DataGridHeightsDemoState();
 }
@@ -39,8 +41,7 @@ class _DataGridHeightsDemoState extends State<DataGridHeightsDemo> {
   final fontSizeController = TextEditingController(text: '12');
   final columnSpacingController = TextEditingController(text: '12');
 
-
-
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -48,66 +49,59 @@ class _DataGridHeightsDemoState extends State<DataGridHeightsDemo> {
           Text('This demo is to show how page handles different heights.'),
           Table(
             children: [
-              TableRow(children: [
-                Text('Max Height (empty for null)'),
-                TextField(
-                  controller: maxHeightController,
-                  decoration: InputDecoration(isDense: true),
-                )
-              ]),
-              TableRow(children: [
-                Text('Row Height'),
-                TextField(
-                  controller: rowHeightController,
-                  decoration: InputDecoration(isDense: true),
-                )
-              ]),
-              TableRow(children: [
-                Text('Header Height'),
-                TextField(
-                  controller: headerHeightController,
-                  decoration: InputDecoration(isDense: true),
-                )
-              ]),
-              TableRow(children: [
-                Text('Footer Height'),
-                TextField(
-                  controller: footerHeightController,
-                  decoration: InputDecoration(isDense: true),
-                )
-              ]),
-              TableRow(children: [
-                Text('Font Size'),
-                TextField(
-                  controller: fontSizeController,
-                  decoration: InputDecoration(isDense: true),
-                )
-              ]),
-              TableRow(children: [
-                Text('Column Spacing'),
-                TextField(
-                  controller: columnSpacingController,
-                  decoration: InputDecoration(isDense: true),
-                )
-              ])
+              TableRow(
+                children: [
+                  Text('Max Height (empty for null)'),
+                  TextField(controller: maxHeightController, decoration: InputDecoration(isDense: true)),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Text('Row Height'),
+                  TextField(controller: rowHeightController, decoration: InputDecoration(isDense: true)),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Text('Header Height'),
+                  TextField(controller: headerHeightController, decoration: InputDecoration(isDense: true)),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Text('Footer Height'),
+                  TextField(controller: footerHeightController, decoration: InputDecoration(isDense: true)),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Text('Font Size'),
+                  TextField(controller: fontSizeController, decoration: InputDecoration(isDense: true)),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Text('Column Spacing'),
+                  TextField(controller: columnSpacingController, decoration: InputDecoration(isDense: true)),
+                ],
+              ),
             ],
           ),
           ElevatedButton(onPressed: () => setState(() => print(maxHeightController.text)), child: Text('update')),
           Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-            ),
-            child: ResusableDatagridW<MapEntry<int, String>>(
+            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+            child: ReusableDataGrid<MapEntry<int, String>>(
               maxHeight: maxHeightController.value.text.isEmpty ? null : double.parse(maxHeightController.value.text),
               data: data,
               fields: [
                 Field((x) => x.key, "key", FilterFieldNum()),
                 Field((x) => x.value, "value", FilterFieldString()),
               ],
-              onRowClick: (x,y) => print(x.toString()),
+              onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
-              onSelectHeaderButton: (x) => //
-                  print(x.toString()),
+              onSelectHeaderButton:
+                  (x) => //
+                      print(x.toString()),
               selectName: "Delete",
               fontSize: double.parse(fontSizeController.value.text),
               headerHeight: double.parse(headerHeightController.value.text),

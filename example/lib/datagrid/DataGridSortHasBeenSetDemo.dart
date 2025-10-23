@@ -1,4 +1,4 @@
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/SortField.dart';
@@ -17,32 +17,36 @@ class Item {
 enum Item$ { name, ram, price, storage }
 
 var originalData = List<Item>.generate(
-    2000,
-    (i) => //
-        Item("id: $i", i * 2, i ~/ 2, i + 500));
+  2000,
+  (i) => //
+      Item("id: $i", i * 2, i ~/ 2, i + 500),
+);
 
 var ramLookup = {64: "sixtyfour", 1: "one", 128: "1two8"};
 
 class DataGridSortHasBeenSetDemo extends StatelessWidget {
+
+  const DataGridSortHasBeenSetDemo({super.key});
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           Text('sort has been set initially'),
           Expanded(
-            child: ResusableDatagridW<Item>(
+
+            child: ReusableDataGrid<Item>(
               data: originalData,
+
               fields: [
                 Field<Item>((x) => x.name, "name", FilterFieldString(searchText: "1")),
-                Field<Item>(
-                  (x) => (ramLookup[x.ram] ?? x.ram.toString()) + "x",
-                  "ram",
-                  FilterFieldNum(),
-                  fieldDefForSortFilter: (x) => x.ram,
-                ),
+                Field<Item>((x) => (ramLookup[x.ram] ?? x.ram.toString()) + "x", "ram", FilterFieldNum(), fieldDefForSortFilter: (x) => x.ram),
                 Field<Item>((x) => x.price, "price", FilterFieldNum(), sort: SortField(isAscending: true)),
                 Field<Item>((x) => x.storage, "storage", FilterFieldNum()),
               ],
+
               onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: null,
               fontSize: 12,

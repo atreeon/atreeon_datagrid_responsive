@@ -41,7 +41,7 @@ final class FilterFieldNum extends FilterField {
   const FilterFieldNum({this.filter1, this.filter2, this.numFilterType = eNumFilterType.equals});
 
   @override
-  // codex: Express the null safe check for whether either boundary was provided.
+
   /// Reports whether at least one numeric bound has been defined.
   bool get isSet => filter1 != null || filter2 != null;
 

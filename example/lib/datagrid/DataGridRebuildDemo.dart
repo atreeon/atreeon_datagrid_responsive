@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:atreeon_datagrid_responsive/ReusableDataGridW.dart';
+import 'package:atreeon_datagrid_responsive/ReusableDataGrid.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +36,9 @@ final data = {
 }.entries.map((e) => MapEntry(e.key, e.value)).toList();
 
 class DataGridRebuildDemo extends StatefulWidget {
+
+  const DataGridRebuildDemo({super.key});
+
   @override
   _DataGridRebuildDemoState createState() => _DataGridRebuildDemoState();
 }
@@ -48,14 +51,18 @@ class _DataGridRebuildDemoState extends State<DataGridRebuildDemo> {
 
   var selected = data.where((element) => [1, 2, 4, 20].contains(element.key)).toList();
 
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           Text('This demo is to show that it can handle a page rebuild.'),
           TextButton(
-            onPressed: () => setState(() => //
-                myValue = Random().nextInt(1000)),
+            onPressed: () => setState(
+              () => //
+                  myValue = Random().nextInt(1000),
+            ),
             child: Text('myValue: $myValue'),
           ),
           Expanded(
@@ -63,15 +70,19 @@ class _DataGridRebuildDemoState extends State<DataGridRebuildDemo> {
             // decoration: BoxDecoration(
             // border: Border.all(color: Colors.black),
             // ),
-            child: ResusableDatagridW<MapEntry<int, String>>(
+
+            child: ReusableDataGrid<MapEntry<int, String>>(
               // maxHeight: 250,
               data: data,
+
               fields: [
                 Field((x) => x.key, "key", FilterFieldNum()),
                 Field((x) => x.value, "value", FilterFieldString()),
               ],
-              onRowClick: (x,y) => print(x.toString()),
+
+              onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
+
               identityFieldId: Field((x) => x.key, "id", FilterFieldNum()),
               selectedIds: selected,
               onSelectHeaderButton: (x) {
@@ -79,7 +90,6 @@ class _DataGridRebuildDemoState extends State<DataGridRebuildDemo> {
                   selected = [];
                   dateUpdated = DateTime.now();
                 });
-
               },
               onCheckboxChange: (x) {
                 print('from demo:' + x.toString());
