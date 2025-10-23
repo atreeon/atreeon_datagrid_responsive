@@ -23,6 +23,14 @@ extension MultiSort<T> on Iterable<T> {
         (Comparable<Object?> valA, Comparable<Object?> valB) => valA.compareTo(valB),
       };
 
+      // When ordering descending we override the comparator so nulls continue to sink to the bottom.
+      if (!sort.isAscending) {
+        if (valueA == null && valueB != null) //
+          return 1;
+        if (valueA != null && valueB == null) //
+          return -1;
+      }
+
       // Apply the requested sort direction by inverting the result when descending.
       return sort.isAscending ? comparison : -comparison;
     }
