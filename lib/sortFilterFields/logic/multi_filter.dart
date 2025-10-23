@@ -6,64 +6,62 @@ import 'package:diacritic/diacritic.dart';
 
 extension MultiSort<T> on Iterable<T> {
   Iterable<T> multiFilter(List<Field<T>> fields) {
-    var filteredFields = fields.where((element) => element.filter!.isSet).toList();
+    final filteredFields = fields.where((element) => element.filter?.isSet ?? false).toList();
 
-    if (filteredFields.length == 0) //
+    if (filteredFields.isEmpty) //
       return this;
 
-    var list = this.where((item) {
+    final list = where((item) {
       var result = true;
 
-      for (var i = 0; i < filteredFields.length; ++i) {
-        var filteredField = filteredFields[i];
+      for (final filteredField in filteredFields) {
+        final fieldResolver = filteredField.fieldDefForSortFilter ?? filteredField.fieldDefinition;
 
-        var value = filteredField.fieldDefForSortFilter == null //
-            ? filteredField.fieldDefinition(item)
-            : filteredField.fieldDefForSortFilter!(item);
+        final value = fieldResolver(item);
 
-        var filter = filteredField.filter!;
+        final filter = filteredField.filter;
 
-        //can't filter for nulls
+        if (filter == null || !filter.isSet) {
+          continue;
+        }
+
         if (value == null) {
           result = false;
-        } else {
-          if (filter is FilterFieldString && value is String && filter.isSet) {
-            var _value = removeDiacritics(value);
-            var searchText = removeDiacritics(filter.searchText!);
+          continue;
+        }
 
-            if (searchText.trim() != "") {
-              if (filter.stringFilterType == eStringFilterType.equals) {
-                result = _value.toLowerCase() == searchText.toLowerCase() && result;
-              } else if (filter.stringFilterType == eStringFilterType.contains) {
-                result = _value.toLowerCase().contains(searchText.toLowerCase()) && result;
-              } else if (filter.stringFilterType == eStringFilterType.startsWith) {
-                result = _value.toLowerCase().startsWith(searchText.toLowerCase()) && result;
-                // print("'${_value.toLowerCase()}' '${searchText.toLowerCase()}' $result");
-              } else if (filter.stringFilterType == eStringFilterType.endsWith) {
-                result = _value.toLowerCase().endsWith(searchText.toLowerCase()) && result;
-              } else {
-                throw Exception("unexpected eStringFilterType");
-              }
-            }
-          }
+        switch ((filter, value)) {
+          case (FilterFieldString(searchText: final text?, stringFilterType: final mode), String stringValue) when text.trim().isNotEmpty:
+            final normalisedValue = removeDiacritics(stringValue).toLowerCase();
 
-          if (filter is FilterFieldNum && value is num && filter.isSet) {
-            if (filter.numFilterType == eNumFilterType.equals) {
-              result = filter.filter1 == null || value == filter.filter1 && result;
-            } else if (filter.numFilterType == eNumFilterType.contains) {
-              result = filter.filter1 == null || value.toString().toLowerCase().contains(filter.filter1.toString().toLowerCase()) && result;
-            } else if (filter.numFilterType == eNumFilterType.gt) {
-              result = filter.filter1 == null || value > filter.filter1! && result;
-            } else if (filter.numFilterType == eNumFilterType.lt) {
-              result = filter.filter1 == null || value < filter.filter1! && result;
-            } else if (filter.numFilterType == eNumFilterType.between) {
-              var from = filter.filter1 ?? -2e53;
-              var to = filter.filter2 ?? 2e53;
-              result = (value >= from && value <= to) && result;
-            } else {
-              throw Exception("unexpected eStringFilterType");
-            }
-          }
+            final normalisedSearch = removeDiacritics(text).toLowerCase();
+
+            final matches = switch (mode) {
+              eStringFilterType.equals => normalisedValue == normalisedSearch,
+              eStringFilterType.contains => normalisedValue.contains(normalisedSearch),
+              eStringFilterType.startsWith => normalisedValue.startsWith(normalisedSearch),
+              eStringFilterType.endsWith => normalisedValue.endsWith(normalisedSearch),
+            };
+
+            result = matches && result;
+
+          case (FilterFieldNum(filter1: final primary, filter2: final secondary, numFilterType: final mode), num numericValue):
+            final matches = switch (mode) {
+              eNumFilterType.equals => primary == null || numericValue == primary,
+              eNumFilterType.contains => primary == null || numericValue.toString().toLowerCase().contains(primary.toString().toLowerCase()),
+              eNumFilterType.gt => primary == null ? true : numericValue > primary,
+              eNumFilterType.lt => primary == null ? true : numericValue < primary,
+              eNumFilterType.between => numericValue >= (primary ?? -2e53) && numericValue <= (secondary ?? 2e53),
+            };
+
+            result = matches && result;
+
+          default:
+            break;
+        }
+
+        if (!result) {
+          break;
         }
       }
 
@@ -73,34 +71,3 @@ extension MultiSort<T> on Iterable<T> {
     return list;
   }
 }
-
-//think this is old code
-
-//abstract class Filterable {}
-
-//abstract class FilterField {
-//  final String fieldName;
-//
-//  FilterField(this.fieldName);
-//}
-
-//class FilterFieldString implements FilterField {
-//  final String fieldName;
-//  final String? searchText;
-//
-//  FilterFieldString({required this.fieldName, this.searchText});
-//}
-
-//class FilterFieldNum implements FilterField {
-//  final String fieldName;
-//  final num? from;
-//  final num? to;
-//  final num? singleNumber;
-//
-//  FilterFieldNum({
-//    required this.fieldName,
-//    required this.from,
-//    required this.to,
-//    required this.singleNumber,
-//  });
-//}

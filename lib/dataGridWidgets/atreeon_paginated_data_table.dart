@@ -449,8 +449,8 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
         IconButton(
           icon: Icon(Icons.skip_previous, color: widget.arrowHeadColor),
           style: ButtonStyle(
-            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
-            iconSize: MaterialStateProperty.all(widget.iconSize),
+            padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+            iconSize: WidgetStateProperty.all(widget.iconSize),
           ),
           tooltip: localizations.firstPageTooltip,
           onPressed: _firstRowIndex <= 0 ? null : _handleFirst,
@@ -458,8 +458,8 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
       IconButton(
         icon: Icon(Icons.chevron_left, color: widget.arrowHeadColor),
         style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
-          iconSize: MaterialStateProperty.all(widget.iconSize),
+          padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+          iconSize: WidgetStateProperty.all(widget.iconSize),
         ),
         tooltip: localizations.previousPageTooltip,
         onPressed: _firstRowIndex <= 0 ? null : _handlePrevious,
@@ -468,8 +468,8 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
       IconButton(
         icon: Icon(Icons.chevron_right, color: widget.arrowHeadColor),
         style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
-          iconSize: MaterialStateProperty.all(widget.iconSize),
+          padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+          iconSize: WidgetStateProperty.all(widget.iconSize),
         ),
         tooltip: localizations.nextPageTooltip,
         onPressed: _isNextPageUnavailable() ? null : _handleNext,
@@ -478,8 +478,8 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
         IconButton(
           icon: Icon(Icons.skip_next, color: widget.arrowHeadColor),
           style: ButtonStyle(
-            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
-            iconSize: MaterialStateProperty.all(widget.iconSize),
+            padding: WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.zero),
+            iconSize: WidgetStateProperty.all(widget.iconSize),
           ),
           tooltip: localizations.lastPageTooltip,
           onPressed: _isNextPageUnavailable() ? null : _handleLast,

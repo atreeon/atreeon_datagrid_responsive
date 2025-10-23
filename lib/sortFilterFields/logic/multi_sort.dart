@@ -7,41 +7,32 @@ import 'package:diacritic/diacritic.dart';
 
 extension MultiSort<T> on Iterable<T> {
   Iterable<T> multisort(List<Field<T>> sortedFields) {
-    if (sortedFields.length == 0) //
+    if (sortedFields.isEmpty) //
       return this;
 
     int compare(fn_fieldDef<T> fieldDef, SortField sort, T a, T b) {
-      var valueA = fieldDef(a);
-      var valueB = fieldDef(b);
+      // Evaluate both comparable values once so the switch expression can inspect them.
+      final (valueA, valueB) = (fieldDef(a), fieldDef(b));
 
-      if (valueA == null && valueB == null) //
-        return 0;
+      // Use a switch expression to exhaustively handle every combination of null, string and comparable values.
+      final comparison = switch ((valueA, valueB)) {
+        (null, null) => 0,
+        (null, _) => 1,
+        (_, null) => -1,
+        (String valA, String valB) => removeDiacritics(valA).toUpperCase().compareTo(removeDiacritics(valB).toUpperCase()),
+        (Comparable<Object?> valA, Comparable<Object?> valB) => valA.compareTo(valB),
+      };
 
-      if (valueA == null) //
-        return 1;
-
-      if (valueB == null) //
-        return -1;
-
-      int result;
-      if (valueA is String && valueB is String) {
-        var valA = removeDiacritics(valueA);
-        var valB = removeDiacritics(valueB);
-        result = valA.toUpperCase().compareTo(valB.toUpperCase());
-      } else //
-        result = valueA.compareTo(valueB);
-
-      if (!sort.isAscending) //
-        return result * -1;
-
-      return result;
+      // Apply the requested sort direction by inverting the result when descending.
+      return sort.isAscending ? comparison : -comparison;
     }
 
     int sortall(T a, T b) {
       int i = 0;
       int? result;
 
-      var sortedFields2 = sortedFields.where((element) => element.sort != null).toList();
+      // Materialise the filtered sort fields once for reuse within the comparator.
+      final sortedFields2 = sortedFields.where((element) => element.sort != null).toList();
 
       while (i < sortedFields2.length) {
         var field = sortedFields2[i];

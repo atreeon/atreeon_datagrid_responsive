@@ -1,37 +1,52 @@
-abstract class FilterField {
+/// The sealed filter field hierarchy exposes the contract shared by every filterable input.
+sealed class FilterField {
+  const FilterField();
+
+  /// Indicates whether the filter currently holds any user supplied criteria.
   bool get isSet;
+
+  /// Returns a copy of the filter with all values cleared.
   FilterField clear();
 }
 
-class FilterFieldString implements FilterField {
+/// Captures text based filter configuration, including the raw query and comparison mode.
+final class FilterFieldString extends FilterField {
+  /// The optional text to find within the field value.
   final String? searchText;
+
+  /// Controls how the supplied [searchText] should be interpreted when filtering.
   final eStringFilterType stringFilterType;
 
-  FilterFieldString({this.searchText, this.stringFilterType = eStringFilterType.contains});
-
-  bool get isSet {
-    return searchText != null && searchText!.isNotEmpty;
-  }
+  /// Creates a filter that operates on string data.
+  const FilterFieldString({this.searchText, this.stringFilterType = eStringFilterType.contains});
 
   @override
-  FilterFieldString clear() {
-    return FilterFieldString();
-  }
+  bool get isSet => searchText != null && searchText!.isNotEmpty;
+
+  @override
+  FilterFieldString clear() => const FilterFieldString();
 }
 
-class FilterFieldNum implements FilterField {
+/// Captures numeric filter configuration including optional boundary values.
+final class FilterFieldNum extends FilterField {
+  /// Optional lower bound (or single value) constraint.
   final num? filter1;
+
+  /// Optional upper bound constraint used by [eNumFilterType.between].
   final num? filter2;
+
   final eNumFilterType numFilterType;
 
-  FilterFieldNum({this.filter1, this.filter2, this.numFilterType = eNumFilterType.equals});
+  /// Creates a filter that operates on numeric values.
+  const FilterFieldNum({this.filter1, this.filter2, this.numFilterType = eNumFilterType.equals});
 
   @override
-  FilterFieldNum clear() {
-    return FilterFieldNum();
-  }
+  // codex: Express the null safe check for whether either boundary was provided.
+  /// Reports whether at least one numeric bound has been defined.
+  bool get isSet => filter1 != null || filter2 != null;
 
-  bool get isSet => this.filter1 != null || this.filter2 != null;
+  @override
+  FilterFieldNum clear() => const FilterFieldNum();
 }
 
 enum eStringFilterType with DropdownEnum {
