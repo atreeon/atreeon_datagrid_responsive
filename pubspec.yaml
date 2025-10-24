@@ -25,7 +25,12 @@ dependencies:
 dev_dependencies:
   test: ^1.18.2
   build_runner: ^2.1.4
+  # // codex: Unlocks Flutter-specific test APIs needed for widget and golden coverage.
+  flutter_test:
+    # // codex: Sources flutter_test directly from the installed Flutter SDK.
+    sdk: flutter
   bloc_test: ^10.0.0
+  # // codex: Supplies golden assertions and device builders for visual regression tests.
+  golden_toolkit: ^0.15.0
 
 flutter:
-

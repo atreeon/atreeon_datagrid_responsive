@@ -1,6 +1,7 @@
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/SortField.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/FilterBox.dart';
+import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/WFilterButton.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -26,6 +27,9 @@ class SortableButton<T> extends StatelessWidget {
 
   final double fontSize;
 
+  /// Controls whether the filter button is always visible or triggered by long press.
+  final bool alwaysShowFilter;
+
   ///{@macro [SortableButton]}
   ///
   ///{@macro [labelId]}
@@ -36,6 +40,7 @@ class SortableButton<T> extends StatelessWidget {
     super.key,
     this.buttonText,
     required this.fontSize,
+    this.alwaysShowFilter = false,
     // required void Function(List<Field<T>>) onChanged,
   });
 
@@ -57,6 +62,7 @@ class SortableButton<T> extends StatelessWidget {
       }
     });
 
+    // Render header tap target that cycles sort state while deferring filter controls.
     return InkWell(
       onTap: () {
         var thisField = fields.firstWhere((e) => e.labelId == labelId);
@@ -78,43 +84,16 @@ class SortableButton<T> extends StatelessWidget {
         ];
         onPressed(newFields);
       },
-      onLongPress: () async {
-        showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            title: Text("Filter by '$labelId'"),
-            content: Column(
-              children: [
-                FilterBox<T>(
-                  fields,
-                  labelId,
-                  onPressed,
-                  this.fontSize,
-                ),
-                Container(height: 50),
-                ElevatedButton(
-                    onPressed: () {
-                      var newFields = fields.map((e) => e.labelId == labelId ? e.copyWithFilter(e.filter!.clear()) : e).toList();
-                      onPressed(newFields);
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Clear This Filter')),
-                ElevatedButton(
-                    onPressed: () {
-                      var newFields = fields.map((e) => e.copyWithFilter(e.filter!.clear())).toList();
-                      onPressed(newFields);
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Clear All Filters')),
-              ],
-            ),
-          ),
-        );
-      },
+      // Allow long press access to filter dialog only when the dedicated button is hidden.
+      onLongPress: alwaysShowFilter
+          ? null
+          : () async {
+              await _showFilterDialog(context);
+            },
       child: Row(
         children: [
           if (thisSort != null) //
-            ...[
+          ...[
             Icon(
               thisSort!.isAscending ? FontAwesomeIcons.angleUp : FontAwesomeIcons.angleDown,
               size: this.fontSize,
@@ -129,13 +108,61 @@ class SortableButton<T> extends StatelessWidget {
             this.buttonText ?? labelId,
             style: TextStyle(color: Colors.blue, fontSize: this.fontSize),
           ),
-          if (filterSet) //
+          if (alwaysShowFilter) //
+            Padding(
+              padding: const EdgeInsets.only(left: 4),
+              child: WFilterButton(
+                isFiltered: filterSet,
+                iconSize: fontSize,
+                iconColor: Colors.blue,
+                onPressed: () => _showFilterDialog(context),
+                tooltip: "Filter by '$labelId'",
+              ),
+            )
+          else if (filterSet) //
             Icon(
-              FontAwesomeIcons.filter,
+              Icons.filter_alt,
               size: this.fontSize,
               color: Colors.blue,
             ),
         ],
+      ),
+    );
+  }
+
+  /// Displays the filter dialog so the caller can adjust filter criteria.
+  Future<void> _showFilterDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text("Filter by '$labelId'"),
+        content: Column(
+          children: [
+            FilterBox<T>(
+              fields,
+              labelId,
+              onPressed,
+              this.fontSize,
+            ),
+            Container(height: 50),
+            ElevatedButton(
+              onPressed: () {
+                var newFields = fields.map((e) => e.labelId == labelId ? e.copyWithFilter(e.filter!.clear()) : e).toList();
+                onPressed(newFields);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Clear This Filter'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                var newFields = fields.map((e) => e.copyWithFilter(e.filter!.clear())).toList();
+                onPressed(newFields);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Clear All Filters'),
+            ),
+          ],
+        ),
       ),
     );
   }
