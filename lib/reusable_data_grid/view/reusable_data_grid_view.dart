@@ -44,6 +44,9 @@ class ReusableDataGridView<T> extends StatelessWidget {
   /// Padding applied to the left and right edges of the table.
   final double horizontalMargin;
 
+  /// Controls if column headers should always display the filter button.
+  final bool alwaysShowFilter;
+
   /// Creates a new view for rendering grid rows based on the bloc state.
   const ReusableDataGridView({
     super.key,
@@ -57,6 +60,7 @@ class ReusableDataGridView<T> extends StatelessWidget {
     required this.fontSize,
     required this.columnSpacing,
     required this.horizontalMargin,
+    this.alwaysShowFilter = false,
   });
 
   @override
@@ -80,6 +84,7 @@ class ReusableDataGridView<T> extends StatelessWidget {
                     onPressed: (updated) => _dispatchFields(context, updated),
                     onChanged: (updated) => _dispatchFields(context, updated),
                     fontSize: fontSize,
+                    alwaysShowFilter: alwaysShowFilter,
                   ),
                 ),
               )

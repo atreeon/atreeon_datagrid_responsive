@@ -68,6 +68,9 @@ class ReusableDataGrid<T> extends StatefulWidget {
   /// Padding applied to the left and right edges of the table.
   final double horizontalMargin;
 
+  /// Determines whether column headers always display a filter button instead of relying on long press.
+  final bool alwaysShowFilter;
+
   /// {@macro reusable_data_grid}
   const ReusableDataGrid({
     super.key,
@@ -89,6 +92,7 @@ class ReusableDataGrid<T> extends StatefulWidget {
     this.fontSize = 12,
     this.columnSpacing = 10,
     this.horizontalMargin = 10,
+    this.alwaysShowFilter = false,
   });
 
   @override
@@ -161,6 +165,7 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
         fontSize: widget.fontSize,
         columnSpacing: widget.columnSpacing,
         horizontalMargin: widget.horizontalMargin,
+        alwaysShowFilter: widget.alwaysShowFilter,
       ),
     );
   }

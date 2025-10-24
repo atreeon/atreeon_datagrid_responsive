@@ -45,6 +45,7 @@ class DataGridFilterSortSetDemo extends StatelessWidget {
               fontSize: 12,
               headerHeight: 20,
               footerHeight: 20,
+              alwaysShowFilter: true,
             ),
           ),
         ],

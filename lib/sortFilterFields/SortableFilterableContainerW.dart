@@ -16,6 +16,7 @@ class SortableFilterableW<T> extends StatelessWidget {
   // final void Function() onShowFilter;
 
   final double fontSize;
+  final bool alwaysShowFilter;
 
   const SortableFilterableW({
     Key? key,
@@ -26,6 +27,7 @@ class SortableFilterableW<T> extends StatelessWidget {
     // required this.showFilter,
     // required this.onShowFilter,
     required this.fontSize,
+    this.alwaysShowFilter = false,
   }) : super(key: key);
 
   Widget build(BuildContext context) {
@@ -33,16 +35,12 @@ class SortableFilterableW<T> extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Visibility(
-        //   child: FilterBox<T>(fields, labelId, onChanged, this.fontSize),
-        //   visible: showFilter,
-        //   maintainState: true,
-        // ),
         SortableButton(
           fields,
           labelId,
           onPressed,
           fontSize: this.fontSize,
+          alwaysShowFilter: alwaysShowFilter,
         ),
       ],
     );
