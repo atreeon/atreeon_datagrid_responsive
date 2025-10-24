@@ -6,11 +6,11 @@ linter:
     camel_case_types: false
     annotate_overrides: false
     file_names: false
-    prefer_const_constructors: false
+    prefer_const_constructors: true
     use_key_in_widget_constructors: false
     no_leading_underscores_for_local_identifiers: false
-    avoid_init_to_null: false
-    avoid_print: false
+    avoid_init_to_null: true
+    avoid_print: true
     curly_braces_in_flow_control_structures: false
 
 analyzer:
