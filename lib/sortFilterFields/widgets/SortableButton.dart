@@ -62,8 +62,9 @@ class SortableButton<T> extends StatelessWidget {
       }
     });
 
-    // Render header tap target that cycles sort state while deferring filter controls.
-    return InkWell(
+    // codex: Build the sortable tap target separately so hover highlights exclude the filter button.
+    final sortTapTarget = InkWell(
+      // codex: Retains the existing sort-cycle behavior on tap.
       onTap: () {
         var thisField = fields.firstWhere((e) => e.labelId == labelId);
         Field<T> newField;
@@ -84,13 +85,15 @@ class SortableButton<T> extends StatelessWidget {
         ];
         onPressed(newFields);
       },
-      // Allow long press access to filter dialog only when the dedicated button is hidden.
+      // codex: Keep long-press dialog access only when the icon is hidden.
       onLongPress: alwaysShowFilter
           ? null
           : () async {
               await _showFilterDialog(context);
             },
       child: Row(
+        // codex: Shrinks to the intrinsic width so padding stays tight beside the filter icon.
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (thisSort != null) //
           ...[
@@ -108,18 +111,7 @@ class SortableButton<T> extends StatelessWidget {
             this.buttonText ?? labelId,
             style: TextStyle(color: Colors.blue, fontSize: this.fontSize),
           ),
-          if (alwaysShowFilter) //
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: WFilterButton(
-                isFiltered: filterSet,
-                iconSize: fontSize,
-                iconColor: Colors.blue,
-                onPressed: () => _showFilterDialog(context),
-                tooltip: "Filter by '$labelId'",
-              ),
-            )
-          else if (filterSet) //
+          if (!alwaysShowFilter && filterSet) //
             Icon(
               Icons.filter_alt,
               size: this.fontSize,
@@ -127,6 +119,34 @@ class SortableButton<T> extends StatelessWidget {
             ),
         ],
       ),
+    );
+
+    if (!alwaysShowFilter) {
+      // codex: Preserve legacy hover behavior when the dedicated filter button is disabled.
+      return sortTapTarget;
+    }
+
+    // codex: Split hover regions so the filter icon highlights independently from the text label.
+    return Row(
+      // codex: Let the row hug its content so headers stay compact in constrained layouts.
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // codex: Presents the original sort tap target as an independent hit region.
+        sortTapTarget,
+        // codex: Adds breathing room between the sort label and filter icon hover areas.
+        const SizedBox(width: 4),
+        WFilterButton(
+          // codex: Reflect whether a filter is active for icon selection.
+          isFiltered: filterSet,
+          // codex: Match icon sizing with the header font.
+          iconSize: fontSize,
+          // codex: Continue using the established brand color.
+          iconColor: Colors.blue,
+          // codex: Reuse the dialog launcher tapped from the button.
+          onPressed: () => _showFilterDialog(context),
+          tooltip: "Filter by '$labelId'",
+        ),
+      ],
     );
   }
 
