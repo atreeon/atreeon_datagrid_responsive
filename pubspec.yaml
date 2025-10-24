@@ -20,14 +20,14 @@ dependencies:
   adaptive_dialog: ^1.6.3
   morphy: ^1.4.2+2
   morphy_annotation: ^1.4.2+2
-  flutter_bloc: ^9.1.1
+  flutter_bloc: ^8.1.6
 
 dev_dependencies:
   test: ^1.18.2
   build_runner: ^2.1.4
   flutter_test:
     sdk: flutter
-  bloc_test: ^10.0.0
+  bloc_test: ^9.1.7
   golden_toolkit: ^0.15.0
 
 flutter:
