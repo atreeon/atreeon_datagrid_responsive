@@ -7,7 +7,6 @@
 
 # Generated code
 *.g.dart
-*.morphy.dart
 
 # Build outputs
 build/
