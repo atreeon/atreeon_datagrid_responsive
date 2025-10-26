@@ -86,3 +86,4 @@ class _DataGridHighlightedRowsDemoState extends State<DataGridHighlightedRowsDem
     );
   }
 }
+
