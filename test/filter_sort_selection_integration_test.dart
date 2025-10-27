@@ -74,7 +74,8 @@ void main() {
         Field<_InventoryItem>(
           (item) => item.price,
           'price',
-          FilterFieldNum(
+          // codex: Make the numeric filter constant so repeated analyzer runs avoid rebuilding identical filters.
+          const FilterFieldNum(
             filter1: 1500,
             numFilterType: eNumFilterType.gt,
           ),
@@ -116,7 +117,8 @@ void main() {
         Field<_InventoryItem>(
           (item) => item.formattedPrice,
           'price',
-          FilterFieldNum(
+          // codex: Const numeric filter prevents unnecessary allocations for identical between-range checks.
+          const FilterFieldNum(
             filter1: 1500,
             filter2: 2500,
             numFilterType: eNumFilterType.between,
