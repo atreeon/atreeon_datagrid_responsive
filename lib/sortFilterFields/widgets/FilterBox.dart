@@ -1,6 +1,7 @@
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 /// {@template [FilterBox]}
 /// A filter to go with multi-filter to enable filtering of a list.
@@ -34,6 +35,42 @@ class FilterBox<T> extends StatefulWidget {
 }
 
 class _FilterBoxState<T> extends State<FilterBox<T>> {
+  static final List<DateFormat> _dateInputParsers = <DateFormat>[
+    DateFormat('yyyy-MM-dd'),
+
+    DateFormat('yy-MM-dd'),
+
+    DateFormat('dd/MM/yyyy'),
+
+    DateFormat('dd/MM/yy'),
+
+    DateFormat('MM/dd/yyyy'),
+
+    DateFormat('MM/dd/yy'),
+
+    DateFormat('yyyy/MM/dd'),
+
+    DateFormat('yy/MM/dd'),
+
+    DateFormat('dd-MM-yyyy'),
+
+    DateFormat('dd-MM-yy'),
+
+    DateFormat('MM-dd-yyyy'),
+
+    DateFormat('MM-dd-yy'),
+
+    DateFormat('dd.MM.yyyy'),
+
+    DateFormat('dd.MM.yy'),
+
+    DateFormat('yyyy.MM.dd'),
+
+    DateFormat('yy.MM.dd'),
+  ];
+
+  static final DateFormat _dateDisplayFormat = DateFormat('yyyy-MM-dd');
+
   final controller1 = TextEditingController();
   final controller2 = TextEditingController();
   late Field<T> thisField;
@@ -54,8 +91,8 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
       dropdownSelection = thisFilter.numFilterType;
     }
     if (thisFilter is FilterFieldDate) {
-      controller1.text = thisFilter.filter1 == null ? "" : thisFilter.filter1!.toIso8601String();
-      controller2.text = thisFilter.filter2 == null ? "" : thisFilter.filter2!.toIso8601String();
+      controller1.text = thisFilter.filter1 == null ? "" : _formatDateForInput(thisFilter.filter1!);
+      controller2.text = thisFilter.filter2 == null ? "" : _formatDateForInput(thisFilter.filter2!);
       dropdownSelection = thisFilter.dateFilterType;
     }
 
@@ -85,9 +122,8 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
             ),
           );
         } else if (eFilter is FilterFieldDate) {
-          final primary = controller1.text.isNotEmpty ? DateTime.tryParse(controller1.text) : null;
-          final secondary = controller2.text.isNotEmpty ? DateTime.tryParse(controller2.text) : null;
-
+          final primary = _parseDateInput(controller1.text);
+          final secondary = _parseDateInput(controller2.text);
           return e.copyWithFilter(
             FilterFieldDate(
               filter1: primary,
@@ -217,5 +253,26 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
           ),
       ],
     );
+  }
+
+  /// Converts stored DateTime values into the canonical text representation.
+  String _formatDateForInput(DateTime date) => _dateDisplayFormat.format(date);
+
+  /// Attempts to parse user-entered date text across common patterns, falling back to ISO 8601 parsing.
+  DateTime? _parseDateInput(String raw) {
+    final normalised = raw.trim();
+    if (normalised.isEmpty) {
+      return null;
+    }
+
+    for (final format in _dateInputParsers) {
+      try {
+        return format.parseStrict(normalised);
+      } catch (_) {
+        continue;
+      }
+    }
+
+    return DateTime.tryParse(normalised);
   }
 }
