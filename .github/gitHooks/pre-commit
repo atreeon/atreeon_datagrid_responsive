@@ -1,11 +1,24 @@
 #!/bin/sh
+# // Exit immediately on errors so failed checks block the commit.
+set -e
 
-flutter test > /dev/null 2>&1
-EXIT_CODE_LAST=$?
+# // Verify the root package test folder exists before triggering Flutter tests.
+if [ -d "test" ]; then
+  echo "🔍 Running Flutter tests in atreeon_datagrid_responsive/..."
+  flutter test
+else
+  echo "⚠️  Failure Flutter tests: atreeon_datagrid_responsive/test directory not found"
+  exit 1
+fi
 
-if [ $EXIT_CODE_LAST != "0" ] ; then
-  echo "testing failed"
-  exit 1; fi;
+# codex: Confirm the example project test suite is available.
+if [ -d "example/test" ]; then
+  echo "🔍 Running Flutter tests in example/..."
+  (cd example && flutter test)
+else
+  echo "⚠️  Failure Flutter tests: example/test directory not found"
+  exit 1
+fi
 
-echo "success"
+echo "✅ Pre-commit checks passed."
 exit 0

@@ -11,5 +11,5 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
-      - run: flutter test
-
+      # // codex: Invoke shared pre-commit test script to keep CI in sync with local hooks.
+      - run: .github/workflows/pre-commit.sh
