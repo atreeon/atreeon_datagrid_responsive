@@ -44,7 +44,7 @@ class DatagridPreSelectedItemsDemo extends StatelessWidget {
               onSelectHeaderButton:
                   (x) => //
                       print(x.toString()),
-              selectedIds: [Item(11, "Adrian"), Item(12, "B"), Item(35, "D")],
+              selectedItems: [Item(11, "Adrian"), Item(12, "B"), Item(35, "D")],
               fontSize: 12,
               headerHeight: 20,
               footerHeight: 20,

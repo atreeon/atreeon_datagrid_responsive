@@ -74,7 +74,7 @@ class _DataGridCheckRequirementDemoState extends State<DataGridCheckRequirementD
               onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
               identityFieldId: Field((x) => x.key, "id", FilterFieldNum()),
-              selectedIds: selected,
+              selectedItems: selected,
               onSelectHeaderButton: (x) {
                 setState(() {
                   selected = [];

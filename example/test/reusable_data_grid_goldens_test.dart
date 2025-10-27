@@ -48,7 +48,7 @@ Widget _buildHostApp({required List<_Employee> rows, required List<Field<_Employ
             child: Column(
               children: [
                 // Data grid under test.
-                ReusableDataGrid<_Employee>(data: rows, fields: fields, identityFieldId: identityField, selectedIds: selected, onSelectHeaderButton: onHeaderSelect, selectName: 'Delete', onCreateClick: onCreate, maxHeight: maxHeight, rowHeight: rowHeight, headerHeight: headerHeight, footerHeight: footerHeight, lastSaveDate: _baselineTimestamp, fontSize: fontSize, columnSpacing: 24, horizontalMargin: 18),
+                ReusableDataGrid<_Employee>(data: rows, fields: fields, identityFieldId: identityField, selectedItems: selected, onSelectHeaderButton: onHeaderSelect, selectName: 'Delete', onCreateClick: onCreate, maxHeight: maxHeight, rowHeight: rowHeight, headerHeight: headerHeight, footerHeight: footerHeight, lastSaveDate: _baselineTimestamp, fontSize: fontSize, columnSpacing: 24, horizontalMargin: 18),
               ],
             ),
           ),

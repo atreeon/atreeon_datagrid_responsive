@@ -66,7 +66,7 @@ class _DataGridHighlightedRowsDemoState extends State<DataGridHighlightedRowsDem
               onRowClick: (x, y) => print(x.toString()),
               lastSaveDate: dateUpdated,
               identityFieldId: Field((x) => x.key, "id", FilterFieldNum()),
-              selectedIds: selected,
+              selectedItems: selected,
               onSelectHeaderButton:
                   (x) => //
                       setState(() => selected = []),
@@ -86,4 +86,3 @@ class _DataGridHighlightedRowsDemoState extends State<DataGridHighlightedRowsDem
     );
   }
 }
-

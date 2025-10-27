@@ -66,7 +66,7 @@ void main() {
         Field<_InventoryItem>(
           (item) => item.category,
           'category',
-          FilterFieldString(
+          const FilterFieldString(
             searchText: 'lap',
             stringFilterType: eStringFilterType.contains,
           ),

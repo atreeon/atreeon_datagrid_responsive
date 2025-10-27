@@ -72,7 +72,7 @@ class _DataGridMaxItemsDemoState extends State<DataGridMaxItemsDemo> {
               lastSaveDate: dateUpdated,
 
               identityFieldId: Field((x) => x.key, "id", FilterFieldNum()),
-              selectedIds: selected,
+              selectedItems: selected,
               onSelectHeaderButton:
                   (x) => //
                       setState(() => selected = []),

@@ -55,8 +55,8 @@ class ReusableDataGrid<T> extends StatefulWidget {
   /// Localized label used for the select-all header column.
   final String selectName;
 
-  /// Pre-selected row identifiers.
-  final List<T>? selectedIds;
+  /// Pre-selected row items.
+  final List<T>? selectedItems;
 
   /// Optional maximum height for the grid before paging is enforced.
   final double? maxHeight;
@@ -90,7 +90,7 @@ class ReusableDataGrid<T> extends StatefulWidget {
     this.identityFieldId,
     this.onSelectHeaderButton,
     this.selectName = 'select',
-    this.selectedIds,
+    this.selectedItems,
     this.onCheckboxChange,
     this.onCheckRequirement,
     this.maxHeight,
@@ -119,7 +119,8 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
         data: widget.data,
         fields: widget.fields,
         identityField: widget.identityFieldId,
-        selectedRecords: widget.selectedIds,
+        // codex: Pass selectedItems through to the bloc so it receives the renamed selection list.
+        selectedRecords: widget.selectedItems,
         maxHeight: widget.maxHeight,
         rowHeight: widget.rowHeight,
         // Fall back to the theme height when widget.headerHeight is null.
@@ -141,10 +142,9 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
         data: widget.data,
         fields: widget.fields,
         identityField: widget.identityFieldId,
-        selectedRecords: widget.selectedIds,
+        selectedRecords: widget.selectedItems,
         maxHeight: widget.maxHeight,
         rowHeight: widget.rowHeight,
-        // codex: Keep header height synced with theme fallback on updates.
         headerHeight: widget.headerHeight ?? context.dgHeaderTheme.height,
         footerHeight: widget.footerHeight,
         lastSaveDate: widget.lastSaveDate,

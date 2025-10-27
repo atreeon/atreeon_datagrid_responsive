@@ -95,7 +95,7 @@ class SortableButton<T> extends StatelessWidget {
         } else {
           var notNullFields = fields.where((e) => e.sort != null && e.labelId != labelId);
           var nullFields = fields.where((e) => e.sort == null && e.labelId != labelId);
-          // codex: Bubble sorted columns ahead of unsorted ones to match legacy behaviour.
+          // Sort sorted columns ahead of unsorted ones
           newFields = [
             ...notNullFields,
             newField,
