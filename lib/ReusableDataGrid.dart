@@ -73,6 +73,9 @@ class ReusableDataGrid<T> extends StatefulWidget {
   /// Determines whether column headers always display a filter button instead of relying on long press.
   final bool alwaysShowFilter;
 
+  /// Controls whether sort toggles keep the original column order or bubble sorted columns forward.
+  final bool preserveFieldOrderOnSort;
+
   /// {@macro reusable_data_grid}
   const ReusableDataGrid({
     super.key,
@@ -95,6 +98,7 @@ class ReusableDataGrid<T> extends StatefulWidget {
     this.columnSpacing = 10,
     this.horizontalMargin = 10,
     this.alwaysShowFilter = false,
+    this.preserveFieldOrderOnSort = true,
   });
 
   @override
@@ -173,6 +177,7 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
         columnSpacing: widget.columnSpacing,
         horizontalMargin: widget.horizontalMargin,
         alwaysShowFilter: widget.alwaysShowFilter,
+        preserveFieldOrderOnSort: widget.preserveFieldOrderOnSort,
       ),
     );
   }

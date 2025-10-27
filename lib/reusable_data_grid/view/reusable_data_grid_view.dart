@@ -48,6 +48,9 @@ class ReusableDataGridView<T> extends StatelessWidget {
   /// Controls if column headers should always display the filter button.
   final bool alwaysShowFilter;
 
+  /// Indicates whether header sort toggles should leave column order intact.
+  final bool preserveFieldOrderOnSort;
+
   /// Creates a new view for rendering grid rows based on the bloc state.
   const ReusableDataGridView({
     super.key,
@@ -62,6 +65,7 @@ class ReusableDataGridView<T> extends StatelessWidget {
     required this.columnSpacing,
     required this.horizontalMargin,
     this.alwaysShowFilter = false,
+    this.preserveFieldOrderOnSort = true,
   });
 
   @override
@@ -92,6 +96,7 @@ class ReusableDataGridView<T> extends StatelessWidget {
                     onChanged: (updated) => _dispatchFields(context, updated),
                     // Omit explicit fontSize so header defaults to theme.
                     alwaysShowFilter: alwaysShowFilter,
+                    preserveFieldOrderOnSort: preserveFieldOrderOnSort,
                   ),
                 ),
               )

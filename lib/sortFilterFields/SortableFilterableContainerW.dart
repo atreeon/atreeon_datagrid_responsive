@@ -18,6 +18,8 @@ class SortableFilterableW<T> extends StatelessWidget {
 
   final double? fontSize;
   final bool alwaysShowFilter;
+  /// Tells the header button whether to keep the original column ordering when sorting.
+  final bool preserveFieldOrderOnSort;
 
   const SortableFilterableW({
     Key? key,
@@ -30,6 +32,7 @@ class SortableFilterableW<T> extends StatelessWidget {
     // fontSize is now optional to allow theme-driven sizing.
     this.fontSize,
     this.alwaysShowFilter = false,
+    this.preserveFieldOrderOnSort = true,
   }) : super(key: key);
 
   Widget build(BuildContext context) {
@@ -47,6 +50,7 @@ class SortableFilterableW<T> extends StatelessWidget {
           onPressed,
           fontSize: effectiveFontSize,
           alwaysShowFilter: alwaysShowFilter,
+          preserveFieldOrderOnSort: preserveFieldOrderOnSort,
         ),
       ],
     );

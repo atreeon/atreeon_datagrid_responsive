@@ -2,9 +2,9 @@ import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/SortField.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/FilterBox.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/WFilterButton.dart';
+import 'package:atreeon_datagrid_responsive/theme/data_grid_header_theme.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:atreeon_datagrid_responsive/theme/data_grid_header_theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// {@template [SortableButton]}
@@ -32,6 +32,9 @@ class SortableButton<T> extends StatelessWidget {
   /// Controls whether the filter button is always visible or triggered by long press.
   final bool alwaysShowFilter;
 
+  /// Indicates whether sorting should preserve the incoming field order.
+  final bool preserveFieldOrderOnSort;
+
   ///{@macro [SortableButton]}
   ///
   ///{@macro [labelId]}
@@ -44,6 +47,7 @@ class SortableButton<T> extends StatelessWidget {
     // fontSize no longer required; when null we resolve from theme.
     this.fontSize,
     this.alwaysShowFilter = false,
+    this.preserveFieldOrderOnSort = true,
     // required void Function(List<Field<T>>) onChanged,
   });
 
@@ -83,14 +87,21 @@ class SortableButton<T> extends StatelessWidget {
         else //
           newField = thisField.copyWithSort(null);
 
-        var notNullFields = fields.where((e) => e.sort != null && e.labelId != labelId);
-        var nullFields = fields.where((e) => e.sort == null && e.labelId != labelId);
-
-        var newFields = [
-          ...notNullFields,
-          newField,
-          ...nullFields,
-        ];
+        // Chooses how to rebuild the field list based on the caller's order preference.
+        late List<Field<T>> newFields;
+        if (preserveFieldOrderOnSort) {
+          // Replace only the tapped field so the original column ordering remains intact.
+          newFields = fields.map((field) => field.labelId == labelId ? newField : field).toList();
+        } else {
+          var notNullFields = fields.where((e) => e.sort != null && e.labelId != labelId);
+          var nullFields = fields.where((e) => e.sort == null && e.labelId != labelId);
+          // codex: Bubble sorted columns ahead of unsorted ones to match legacy behaviour.
+          newFields = [
+            ...notNullFields,
+            newField,
+            ...nullFields,
+          ];
+        }
         onPressed(newFields);
       },
       onLongPress: alwaysShowFilter
