@@ -7,6 +7,7 @@ import 'package:atreeon_datagrid_responsive/reusable_data_grid/bloc/reusable_dat
 import 'package:atreeon_datagrid_responsive/sortFilterFields/SortableFilterableContainerW.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_get_child_size/atreeon_get_child_size.dart';
+import 'package:atreeon_datagrid_responsive/theme/data_grid_header_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -73,6 +74,12 @@ class ReusableDataGridView<T> extends StatelessWidget {
 
         final shouldUseStaticTable = state.requestedMaxHeight != null && state.effectiveMaxHeight != state.requestedMaxHeight;
 
+        // Pull header sizing from the theme so we can switch between regular and large header
+        final headerTheme = context.dgHeaderTheme;
+        final textScaler = MediaQuery.textScalerOf(context);
+        final effectiveHeaderStyle = headerTheme.titleStyle.copyWith(
+          fontSize: textScaler.scale(headerTheme.titleStyle.fontSize ?? 14),
+        );
         final fields = state.fields;
         final columns = [
           ...fields
@@ -83,7 +90,7 @@ class ReusableDataGridView<T> extends StatelessWidget {
                     labelId: field.labelId,
                     onPressed: (updated) => _dispatchFields(context, updated),
                     onChanged: (updated) => _dispatchFields(context, updated),
-                    fontSize: fontSize,
+                    // Omit explicit fontSize so header defaults to theme.
                     alwaysShowFilter: alwaysShowFilter,
                   ),
                 ),
@@ -92,13 +99,8 @@ class ReusableDataGridView<T> extends StatelessWidget {
           if (identityFieldId != null && onSelectHeaderButton != null)
             DataColumn(
               label: InkWell(
-                child: Text(
-                  selectName,
-                  style: TextStyle(
-                    fontSize: fontSize,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
+                // Style the selection header using the themed header style.
+                child: Text(selectName, style: effectiveHeaderStyle.copyWith(decoration: TextDecoration.underline)),
                 onTap: () => onSelectHeaderButton!(state.selectedIds),
               ),
             ),

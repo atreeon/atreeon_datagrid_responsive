@@ -1,6 +1,7 @@
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/SortableButton.dart';
 import 'package:flutter/material.dart';
+import 'package:atreeon_datagrid_responsive/theme/data_grid_header_theme.dart';
 import 'package:flutter/widgets.dart';
 
 class SortableFilterableW<T> extends StatelessWidget {
@@ -15,7 +16,7 @@ class SortableFilterableW<T> extends StatelessWidget {
   // final bool showFilter;
   // final void Function() onShowFilter;
 
-  final double fontSize;
+  final double? fontSize;
   final bool alwaysShowFilter;
 
   const SortableFilterableW({
@@ -26,11 +27,16 @@ class SortableFilterableW<T> extends StatelessWidget {
     required this.onChanged,
     // required this.showFilter,
     // required this.onShowFilter,
-    required this.fontSize,
+    // fontSize is now optional to allow theme-driven sizing.
+    this.fontSize,
     this.alwaysShowFilter = false,
   }) : super(key: key);
 
   Widget build(BuildContext context) {
+    final theme = context.dgHeaderTheme;
+    final scaler = MediaQuery.textScalerOf(context);
+    final effectiveFontSize = scaler.scale(fontSize ?? (theme.titleStyle.fontSize ?? 14));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +45,7 @@ class SortableFilterableW<T> extends StatelessWidget {
           fields,
           labelId,
           onPressed,
-          fontSize: this.fontSize,
+          fontSize: effectiveFontSize,
           alwaysShowFilter: alwaysShowFilter,
         ),
       ],

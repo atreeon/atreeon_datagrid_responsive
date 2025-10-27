@@ -1,5 +1,6 @@
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:flutter/material.dart';
+import 'package:atreeon_datagrid_responsive/theme/data_grid_header_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'reusable_data_grid/bloc/reusable_data_grid_bloc.dart';
@@ -24,7 +25,8 @@ class ReusableDataGrid<T> extends StatefulWidget {
   final double rowHeight;
 
   /// The height for the table header area in logical pixels.
-  final double headerHeight;
+  /// If null, the themed header height from [DataGridHeaderTheme] is used.
+  final double? headerHeight;
 
   /// The height for the table footer area in logical pixels.
   final double footerHeight;
@@ -77,7 +79,7 @@ class ReusableDataGrid<T> extends StatefulWidget {
     required this.data,
     required this.fields,
     required this.lastSaveDate,
-    required this.headerHeight,
+    this.headerHeight,
     required this.footerHeight,
     this.onRowClick,
     this.onCreateClick,
@@ -100,24 +102,28 @@ class ReusableDataGrid<T> extends StatefulWidget {
 }
 
 class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
-  // Maintain the bloc instance so widget rebuilds reuse the same controller.
-  late final ReusableDataGridBloc<T> _bloc;
+  // Hold the bloc lazily so we can resolve header height from Theme.
+  ReusableDataGridBloc<T>? _bloc;
 
   @override
-  void initState() {
-    super.initState();
-    // Initialize the bloc with the initial widget props so the grid state is ready before build runs.
-    _bloc = ReusableDataGridBloc<T>(
-      data: widget.data,
-      fields: widget.fields,
-      identityField: widget.identityFieldId,
-      selectedRecords: widget.selectedIds,
-      maxHeight: widget.maxHeight,
-      rowHeight: widget.rowHeight,
-      headerHeight: widget.headerHeight,
-      footerHeight: widget.footerHeight,
-      lastSaveDate: widget.lastSaveDate,
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_bloc == null) {
+      // Read the header height from the theme extension (regular/large).
+      final themedHeaderHeight = context.dgHeaderTheme.height;
+      _bloc = ReusableDataGridBloc<T>(
+        data: widget.data,
+        fields: widget.fields,
+        identityField: widget.identityFieldId,
+        selectedRecords: widget.selectedIds,
+        maxHeight: widget.maxHeight,
+        rowHeight: widget.rowHeight,
+        // Fall back to the theme height when widget.headerHeight is null.
+        headerHeight: widget.headerHeight ?? themedHeaderHeight,
+        footerHeight: widget.footerHeight,
+        lastSaveDate: widget.lastSaveDate,
+      );
+    }
   }
 
   @override
@@ -126,7 +132,7 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
     // Determine when upstream changes require clearing the local selection to mirror prior behavior.
     final shouldClearSelection = widget.lastSaveDate != oldWidget.lastSaveDate || widget.data.length != oldWidget.data.length;
     // Notify the bloc about new props so filters, data, and layout can update reactively.
-    _bloc.add(
+    _bloc!.add(
       ReusableDataGridConfigurationChanged<T>(
         data: widget.data,
         fields: widget.fields,
@@ -134,7 +140,8 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
         selectedRecords: widget.selectedIds,
         maxHeight: widget.maxHeight,
         rowHeight: widget.rowHeight,
-        headerHeight: widget.headerHeight,
+        // codex: Keep header height synced with theme fallback on updates.
+        headerHeight: widget.headerHeight ?? context.dgHeaderTheme.height,
         footerHeight: widget.footerHeight,
         lastSaveDate: widget.lastSaveDate,
         clearSelection: shouldClearSelection,
@@ -144,7 +151,7 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
 
   @override
   void dispose() {
-    _bloc.close();
+    _bloc?.close();
     super.dispose();
   }
 
@@ -152,7 +159,7 @@ class _ReusableDataGridState<T> extends State<ReusableDataGrid<T>> {
   Widget build(BuildContext context) {
     // Provide the existing bloc instance to descendants so UI builders can subscribe to state changes.
     return BlocProvider<ReusableDataGridBloc<T>>.value(
-      value: _bloc,
+      value: _bloc!,
       // Delegate the rendering to the stateless view that consumes bloc state.
       child: ReusableDataGridView<T>(
         onRowClick: widget.onRowClick,

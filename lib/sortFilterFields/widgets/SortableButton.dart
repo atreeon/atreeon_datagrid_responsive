@@ -4,6 +4,7 @@ import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/FilterBox.d
 import 'package:atreeon_datagrid_responsive/sortFilterFields/widgets/WFilterButton.dart';
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
+import 'package:atreeon_datagrid_responsive/theme/data_grid_header_theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// {@template [SortableButton]}
@@ -25,7 +26,8 @@ class SortableButton<T> extends StatelessWidget {
 
   final void Function(List<Field<T>>) onPressed;
 
-  final double fontSize;
+  // Make fontSize optional so headers can default to the theme-provided text size.
+  final double? fontSize;
 
   /// Controls whether the filter button is always visible or triggered by long press.
   final bool alwaysShowFilter;
@@ -39,7 +41,8 @@ class SortableButton<T> extends StatelessWidget {
     this.onPressed, {
     super.key,
     this.buttonText,
-    required this.fontSize,
+    // fontSize no longer required; when null we resolve from theme.
+    this.fontSize,
     this.alwaysShowFilter = false,
     // required void Function(List<Field<T>>) onChanged,
   });
@@ -61,6 +64,13 @@ class SortableButton<T> extends StatelessWidget {
         filterSet = e.filter?.isSet ?? false;
       }
     });
+
+    // Resolve header design tokens from the theme and apply accessibility scaling.
+    final headerTheme = context.dgHeaderTheme;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final effectiveTextSize = textScaler.scale(fontSize ?? (headerTheme.titleStyle.fontSize ?? 14));
+    final effectiveTextStyle = headerTheme.titleStyle.copyWith(fontSize: effectiveTextSize);
+    final effectiveIconSize = textScaler.scale(headerTheme.iconSize);
 
     final sortTapTarget = InkWell(
       onTap: () {
@@ -95,22 +105,22 @@ class SortableButton<T> extends StatelessWidget {
           ...[
             Icon(
               thisSort!.isAscending ? FontAwesomeIcons.angleUp : FontAwesomeIcons.angleDown,
-              size: this.fontSize,
+              size: effectiveIconSize,
               color: Colors.blue,
             ),
             Text(
               index.toString(),
-              style: TextStyle(color: Colors.blue, fontSize: this.fontSize),
+              style: effectiveTextStyle.copyWith(color: Colors.blue),
             ),
           ],
           Text(
             this.buttonText ?? labelId,
-            style: TextStyle(color: Colors.blue, fontSize: this.fontSize),
+            style: effectiveTextStyle.copyWith(color: Colors.blue),
           ),
           if (!alwaysShowFilter && filterSet) //
             Icon(
               Icons.filter_alt,
-              size: this.fontSize,
+              size: effectiveIconSize,
               color: Colors.blue,
             ),
         ],
@@ -128,7 +138,6 @@ class SortableButton<T> extends StatelessWidget {
         const SizedBox(width: 4),
         WFilterButton(
           isFiltered: filterSet,
-          iconSize: fontSize,
           iconColor: Colors.blue,
           onPressed: () => _showFilterDialog(context),
           tooltip: "Filter by '$labelId'",
@@ -139,6 +148,9 @@ class SortableButton<T> extends StatelessWidget {
 
   /// Displays the filter dialog so the caller can adjust filter criteria.
   Future<void> _showFilterDialog(BuildContext context) async {
+    final headerTheme = context.dgHeaderTheme;
+    final textScaler = MediaQuery.textScalerOf(context);
+    final dialogFontSize = textScaler.scale(fontSize ?? (headerTheme.titleStyle.fontSize ?? 14));
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -149,7 +161,7 @@ class SortableButton<T> extends StatelessWidget {
               fields,
               labelId,
               onPressed,
-              this.fontSize,
+              dialogFontSize,
             ),
             Container(height: 50),
             ElevatedButton(
