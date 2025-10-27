@@ -25,8 +25,8 @@ class _DataGridDateDemoState extends State<DataGridDateDemo> {
             maxHeight: 300,
             data: data,
             fields: [
-              Field((x) => x.key, "key", FilterFieldString(), format: (x) => DateFormat('dd MMM yy').format(x.key)),
-              Field((x) => x.value, "value", FilterFieldString()),
+              Field((x) => x.key, "key", FilterFieldDate(), format: (x) => DateFormat('dd MMM yy').format(x.key)),
+              Field((x) => x.value, "value", FilterFieldNum()),
             ],
             onRowClick: (x, y) => print(x.toString()),
             lastSaveDate: dateUpdated,
@@ -38,6 +38,7 @@ class _DataGridDateDemoState extends State<DataGridDateDemo> {
             headerHeight: 20,
             footerHeight: 20,
             rowHeight: 25,
+            alwaysShowFilter: true,
           ),
         ],
       ),

@@ -56,6 +56,18 @@ extension MultiSort<T> on Iterable<T> {
 
             result = matches && result;
 
+          // Adds support for evaluating date-based filters
+          case (FilterFieldDate(filter1: final primary, filter2: final secondary, dateFilterType: final mode), DateTime dateValue):
+            print("Applying date filter on value: $dateValue with primary: $primary, secondary: $secondary, mode: $mode");
+            final matches = switch (mode) {
+              eDateFilterType.equals => primary == null ? true : dateValue.isAtSameMomentAs(primary),
+              eDateFilterType.gt => primary == null ? true : dateValue.isAfter(primary),
+              eDateFilterType.lt => primary == null ? true : dateValue.isBefore(primary),
+              eDateFilterType.between => (primary == null || !dateValue.isBefore(primary)) && (secondary == null || !dateValue.isAfter(secondary)),
+            };
+
+            result = matches && result;
+
           default:
             break;
         }

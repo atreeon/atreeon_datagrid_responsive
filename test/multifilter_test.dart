@@ -25,11 +25,11 @@ class Computer {
 }
 
 Map<String, Comparable?> itemSortFilterFields(Computer phone) => {
-      'name': phone.name,
-      'ram': phone.ram,
-      'unsupported': phone.unsupported,
-      'cost': phone.cost,
-    };
+  'name': phone.name,
+  'ram': phone.ram,
+  'unsupported': phone.unsupported,
+  'cost': phone.cost,
+};
 
 void main() {
   group("filterSort", () {
@@ -56,13 +56,14 @@ void main() {
     test("3 filter by number", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.ram,
-            "ram",
-            FilterFieldNum(
-              filter1: 63,
-              filter2: null,
-              numFilterType: eNumFilterType.between,
-            )),
+          (x) => x.ram,
+          "ram",
+          FilterFieldNum(
+            filter1: 63,
+            filter2: null,
+            numFilterType: eNumFilterType.between,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -121,13 +122,14 @@ void main() {
     test("4 filter by nullable double", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.cost,
-            "cost",
-            FilterFieldNum(
-              filter1: 2000.0,
-              filter2: null,
-              numFilterType: eNumFilterType.between,
-            )),
+          (x) => x.cost,
+          "cost",
+          FilterFieldNum(
+            filter1: 2000.0,
+            filter2: null,
+            numFilterType: eNumFilterType.between,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -157,13 +159,14 @@ void main() {
       var fields = <Field<Computer>>[
         Field((x) => x.name, "name", FilterFieldString(searchText: 'A', stringFilterType: eStringFilterType.contains)),
         Field(
-            (x) => x.ram,
-            "ram",
-            FilterFieldNum(
-              filter1: null,
-              filter2: 5,
-              numFilterType: eNumFilterType.between,
-            )),
+          (x) => x.ram,
+          "ram",
+          FilterFieldNum(
+            filter1: null,
+            filter2: 5,
+            numFilterType: eNumFilterType.between,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -233,12 +236,13 @@ void main() {
     test("12 FilterFieldString startsWith", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.name,
-            "name",
-            FilterFieldString(
-              searchText: 'A',
-              stringFilterType: eStringFilterType.startsWith,
-            )),
+          (x) => x.name,
+          "name",
+          FilterFieldString(
+            searchText: 'A',
+            stringFilterType: eStringFilterType.startsWith,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -253,12 +257,13 @@ void main() {
     test("13 FilterFieldString equals", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.name,
-            "name",
-            FilterFieldString(
-              searchText: 'Adrian',
-              stringFilterType: eStringFilterType.equals,
-            )),
+          (x) => x.name,
+          "name",
+          FilterFieldString(
+            searchText: 'Adrian',
+            stringFilterType: eStringFilterType.equals,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -272,12 +277,13 @@ void main() {
     test("13.1 FilterFieldString equals, if null shouldn't restrict", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.name,
-            "name",
-            FilterFieldString(
-              searchText: '',
-              stringFilterType: eStringFilterType.equals,
-            )),
+          (x) => x.name,
+          "name",
+          FilterFieldString(
+            searchText: '',
+            stringFilterType: eStringFilterType.equals,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -289,12 +295,13 @@ void main() {
     test("14 FilterFieldString endsWith", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.name,
-            "w",
-            FilterFieldString(
-              searchText: 'w',
-              stringFilterType: eStringFilterType.endsWith,
-            )),
+          (x) => x.name,
+          "w",
+          FilterFieldString(
+            searchText: 'w',
+            stringFilterType: eStringFilterType.endsWith,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -331,12 +338,13 @@ void main() {
     test("15 FilterFieldNum gt", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.ram,
-            "ram",
-            FilterFieldNum(
-              filter1: 100,
-              numFilterType: eNumFilterType.gt,
-            )),
+          (x) => x.ram,
+          "ram",
+          FilterFieldNum(
+            filter1: 100,
+            numFilterType: eNumFilterType.gt,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -350,12 +358,13 @@ void main() {
     test("16 FilterFieldNum equals", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.ram,
-            "ram",
-            FilterFieldNum(
-              filter1: 64,
-              numFilterType: eNumFilterType.equals,
-            )),
+          (x) => x.ram,
+          "ram",
+          FilterFieldNum(
+            filter1: 64,
+            numFilterType: eNumFilterType.equals,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -369,12 +378,13 @@ void main() {
     test("17 FilterFieldNum contains", () {
       var fields = <Field<Computer>>[
         Field(
-            (x) => x.ram,
-            "ram",
-            FilterFieldNum(
-              filter1: 8,
-              numFilterType: eNumFilterType.contains,
-            )),
+          (x) => x.ram,
+          "ram",
+          FilterFieldNum(
+            filter1: 8,
+            numFilterType: eNumFilterType.contains,
+          ),
+        ),
       ];
 
       var sorted = list.multiFilter(fields);
@@ -383,6 +393,37 @@ void main() {
       ];
 
       expect(sorted.toString(), expected.toString());
+    });
+
+    test("18 FilterFieldDate between", () {
+      final entries = <MapEntry<DateTime, int>>[
+        MapEntry(DateTime(2023, 12, 31), 1),
+        MapEntry(DateTime(2024, 01, 01), 2),
+        MapEntry(DateTime(2024, 02, 14), 3),
+        MapEntry(DateTime(2024, 03, 01), 4),
+        MapEntry(DateTime(2024, 04, 01), 5),
+      ];
+
+      final fields = <Field<MapEntry<DateTime, int>>>[
+        Field(
+          (x) => x.key,
+          "date",
+          FilterFieldDate(
+            filter1: DateTime(2024, 01, 01),
+            filter2: DateTime(2024, 03, 01),
+            dateFilterType: eDateFilterType.between,
+          ),
+        ),
+      ];
+
+      final filtered = entries.multiFilter(fields);
+      final expected = [
+        MapEntry(DateTime(2024, 01, 01), 2),
+        MapEntry(DateTime(2024, 02, 14), 3),
+        MapEntry(DateTime(2024, 03, 01), 4),
+      ];
+
+      expect(filtered.toString(), expected.toString());
     });
   });
 }

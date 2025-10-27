@@ -53,6 +53,11 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
       controller2.text = thisFilter.filter2 == null ? "" : thisFilter.filter2.toString();
       dropdownSelection = thisFilter.numFilterType;
     }
+    if (thisFilter is FilterFieldDate) {
+      controller1.text = thisFilter.filter1 == null ? "" : thisFilter.filter1!.toIso8601String();
+      controller2.text = thisFilter.filter2 == null ? "" : thisFilter.filter2!.toIso8601String();
+      dropdownSelection = thisFilter.dateFilterType;
+    }
 
     controller1.addListener(onFilterChangeListener);
     controller2.addListener(onFilterChangeListener);
@@ -65,16 +70,29 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
       if (e.labelId == widget.labelId) {
         var eFilter = e.filter;
         if (eFilter is FilterFieldString) {
-          return e.copyWithFilter(FilterFieldString(
-            searchText: controller1.text,
-            stringFilterType: dropdownSelection as eStringFilterType,
-          ));
+          return e.copyWithFilter(
+            FilterFieldString(
+              searchText: controller1.text,
+              stringFilterType: dropdownSelection as eStringFilterType,
+            ),
+          );
         } else if (eFilter is FilterFieldNum) {
           return e.copyWithFilter(
             FilterFieldNum(
               filter1: controller1.text != '' ? num.parse(controller1.text) : null,
               filter2: controller2.text != '' ? num.parse(controller2.text) : null,
               numFilterType: dropdownSelection as eNumFilterType,
+            ),
+          );
+        } else if (eFilter is FilterFieldDate) {
+          final primary = controller1.text.isNotEmpty ? DateTime.tryParse(controller1.text) : null;
+          final secondary = controller2.text.isNotEmpty ? DateTime.tryParse(controller2.text) : null;
+
+          return e.copyWithFilter(
+            FilterFieldDate(
+              filter1: primary,
+              filter2: secondary,
+              dateFilterType: dropdownSelection as eDateFilterType,
             ),
           );
         }
@@ -91,6 +109,8 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
       return filter.stringFilterType.index;
     } else if (filter is FilterFieldNum) {
       return filter.numFilterType.index;
+    } else if (filter is FilterFieldDate) {
+      return filter.dateFilterType.index;
     } else {
       throw Exception("unexpected filter");
     }
@@ -104,23 +124,32 @@ class _FilterBoxState<T> extends State<FilterBox<T>> {
       } else if (filter is FilterFieldNum) {
         // ignore: unnecessary_cast
         return eNumFilterType.values as List<DropdownEnum>;
+      } else if (filter is FilterFieldDate) {
+        return eDateFilterType.values as List<DropdownEnum>;
       } else {
         throw Exception("unexpected filter");
       }
     }();
 
     return items
-        .map((e) => DropdownMenuItem<DropdownEnum>(
-              value: e,
-              child: Text(e.description),
-            ))
+        .map(
+          (e) => DropdownMenuItem<DropdownEnum>(
+            value: e,
+            child: Text(e.description),
+          ),
+        )
         .toList();
   }
 
   Widget build(BuildContext context) {
-    var keyboardType = thisField.filter is FilterFieldNum //
-        ? TextInputType.number
-        : TextInputType.text;
+    late TextInputType keyboardType;
+    if (thisField.filter is FilterFieldNum) {
+      keyboardType = TextInputType.number;
+    } else if (thisField.filter is FilterFieldDate) {
+      keyboardType = TextInputType.datetime;
+    } else {
+      keyboardType = TextInputType.text;
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
