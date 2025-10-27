@@ -1,6 +1,6 @@
 name: atreeon_datagrid_responsive
 description: A datagrid with sorting and filtering capabilities.  It is also responsive to screen size.  Fully Typed.
-version: 0.5.1+1
+version: 0.5.3
 homepage: https://atreeon.com
 repository: https://github.com/atreeon/atreeon_datagrid_responsive
 
@@ -30,4 +30,4 @@ dev_dependencies:
   bloc_test: ^9.1.7
   golden_toolkit: ^0.15.0
 
-flutter:
+
