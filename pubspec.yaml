@@ -18,7 +18,11 @@ dependencies:
   intl: ">=0.18.0 <1.0.0"
   atreeon_get_child_size: ">=0.1.1 <0.2.0"
   adaptive_dialog: ^1.6.3
-  morphy: ^1.4.2+2
+  morphy:
+    git:
+      url: https://github.com/atreeon/morphy.git
+      path: morphy
+      ref: 1.4.3
   morphy_annotation: ^1.4.2+2
   flutter_bloc: ^8.1.6
 
