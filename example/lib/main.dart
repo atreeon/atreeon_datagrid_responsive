@@ -14,6 +14,7 @@ import 'package:example/datagrid/DataGridRebuildDemo.dart';
 import 'package:example/datagrid/DataGridSortHasBeenSetDemo.dart';
 import 'package:example/datagrid/DataGridWrapLongTextDemo.dart';
 import 'package:example/datagrid/DatagridPreSelectedItemsDemo.dart';
+import 'package:example/datagrid/DataGridFiveColumnTasksDemo.dart';
 import 'package:example/supporting/DataTableDefaultExample.dart';
 import 'package:example/supporting/PaginatedDataTableDefaultExample.dart';
 import 'package:flutter/material.dart';
@@ -35,16 +36,11 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
-        title: 'Flutter Demo',
-        // Register a regular header theme so consumers can switch to large by swapping the extension.
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          extensions: <ThemeExtension<dynamic>>[
-            DataGridHeaderTheme.regular(ThemeData().textTheme),
-          ],
-        ),
-        home: MyHomePage(),
-      );
+    title: 'Flutter Demo',
+    // Register a regular header theme so consumers can switch to large by swapping the extension.
+    theme: ThemeData(primarySwatch: Colors.blue, extensions: <ThemeExtension<dynamic>>[DataGridHeaderTheme.regular(ThemeData().textTheme)]),
+    home: MyHomePage(),
+  );
 }
 
 class MyHomePage extends StatelessWidget {
@@ -62,6 +58,7 @@ class MyHomePage extends StatelessWidget {
           MenuItemAdi("DataGridWrapLongTextDemo", () => DataGridWrapLongTextDemo()),
           MenuItemAdi("DataGridDateDemo", () => DataGridDateDemo()),
           MenuItemAdi("DataGridFilterSortSetDemo", () => DataGridFilterSortSetDemo()),
+          MenuItemAdi("DataGridFiveColumnTasksDemo", () => DataGridFiveColumnTasksDemo()),
           MenuItemAdi("DataGridHeaderThemeDemo", () => SDataGridHeaderThemeDemo()),
           MenuItemAdi("VeryLongListDemo", () => VeryLongListDemo()),
           MenuItemAdi("DataGridHidePaginationDemo", () => DataGridHidePaginationDemo()),
@@ -70,11 +67,7 @@ class MyHomePage extends StatelessWidget {
           MenuItemAdi("DataGridMaxHeightDemo", () => DataGridMaxHeightDemo()),
           MenuItemAdi("DataGridInAColumnEtcDemo", () => DataGridInAColumnEtcDemo()),
         ]),
-        MenuSubMenu("supporting", [
-          MenuItemAdi("TextEditingControllerExample", () => TextEditingControllerExample()),
-          MenuItemAdi("PaginatedDataTableDefaultExample", () => PaginatedDataTableDefaultExample()),
-          MenuItemAdi("DataTableDefaultExample", () => DataTableDefaultExample()),
-        ]),
+        MenuSubMenu("supporting", [MenuItemAdi("TextEditingControllerExample", () => TextEditingControllerExample()), MenuItemAdi("PaginatedDataTableDefaultExample", () => PaginatedDataTableDefaultExample()), MenuItemAdi("DataTableDefaultExample", () => DataTableDefaultExample())]),
       ]),
     );
   }
