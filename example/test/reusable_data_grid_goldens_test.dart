@@ -66,7 +66,8 @@ void main() {
       await tester.binding.setSurfaceSize(const Size(900, 640));
       addTearDown(() => tester.binding.setSurfaceSize(null));
 
-      await tester.pumpWidget(_buildHostApp(rows: _baselineEmployees, fields: _buildPaginatedFields(), headerHeight: 56, footerHeight: 64, rowHeight: 60, fontSize: 16));
+      // codex: Constrain the grid height to the 480px viewport used by this golden to prevent overflow after recent layout changes.
+      await tester.pumpWidget(_buildHostApp(rows: _baselineEmployees, fields: _buildPaginatedFields(), headerHeight: 56, footerHeight: 64, rowHeight: 60, fontSize: 16, maxHeight: 480));
 
       await tester.pumpAndSettle();
 
