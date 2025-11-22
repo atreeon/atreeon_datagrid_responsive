@@ -4,6 +4,7 @@ import 'package:atreeon_datagrid_responsive/dataGridWidgets/atreeon_paginated_da
 import 'package:atreeon_datagrid_responsive/reusable_data_grid/bloc/reusable_data_grid_bloc.dart';
 import 'package:atreeon_datagrid_responsive/reusable_data_grid/bloc/reusable_data_grid_event.dart';
 import 'package:atreeon_datagrid_responsive/reusable_data_grid/bloc/reusable_data_grid_state.dart';
+import 'package:atreeon_datagrid_responsive/reusable_data_grid/view/column_width_plan.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/SortableFilterableContainerW.dart';
 import 'package:atreeon_datagrid_responsive/sortFilterFields/models/Field.dart';
 import 'package:atreeon_get_child_size/atreeon_get_child_size.dart';
@@ -85,43 +86,11 @@ class ReusableDataGridView<T> extends StatelessWidget {
           fontSize: textScaler.scale(headerTheme.titleStyle.fontSize ?? 14),
         );
         final fields = state.fields;
-        final columns = [
-          ...fields
-              .map(
-                (field) => DataColumn(
-                  label: SortableFilterableW(
-                    fields: fields,
-                    labelId: field.labelId,
-                    onPressed: (updated) => _dispatchFields(context, updated),
-                    onChanged: (updated) => _dispatchFields(context, updated),
-                    // Omit explicit fontSize so header defaults to theme.
-                    alwaysShowFilter: alwaysShowFilter,
-                    preserveFieldOrderOnSort: preserveFieldOrderOnSort,
-                  ),
-                ),
-              )
-              .toList(),
-          if (identityFieldId != null && onSelectHeaderButton != null)
-            DataColumn(
-              label: InkWell(
-                // Style the selection header using the themed header style.
-                child: Text(selectName, style: effectiveHeaderStyle.copyWith(decoration: TextDecoration.underline)),
-                onTap: () => onSelectHeaderButton!(state.selectedIds),
-              ),
-            ),
-        ];
-
-        final dataSource = DataGridRowsDTS(
-          state.data,
-          fields,
-          onRowClick,
-          identityFieldId,
-          state.selectedIds,
-          (entries) => _dispatchSelection(context, entries),
-          fontSize: fontSize,
-          onCheckboxChange: onCheckboxChange,
-          onCheckRequirement: onCheckRequirement,
-        );
+        // codex: Track whether the trailing selection column should be rendered so width allocation accounts for it.
+        // codex: Flag whether the Clear column should render so width planning can include it.
+        final hasSelectionColumn = identityFieldId != null && onSelectHeaderButton != null;
+        // codex: Define the cell text style up front so width calculations match actual rendering.
+        final cellTextStyle = TextStyle(fontSize: fontSize);
 
         return FlexibleFixedHeightW(
           height: state.effectiveMaxHeight,
@@ -134,36 +103,119 @@ class ReusableDataGridView<T> extends StatelessWidget {
                 if (shouldUseStaticTable)
                   Container(
                     decoration: const BoxDecoration(),
-                    child: DataTable(
-                      columnSpacing: columnSpacing,
-                      horizontalMargin: horizontalMargin,
-                      dividerThickness: 0,
-                      showCheckboxColumn: false,
-                      dataRowMaxHeight: state.rowHeight,
-                      dataRowMinHeight: state.rowHeight,
-                      rows: dataSource.getAllRows(),
-                      headingRowHeight: state.headerHeight + state.remainderHeight,
-                      columns: columns,
+                    // codex: Use layout constraints to derive column widths that prioritize longer content.
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // codex: Compute proportional column widths based on headers, data, and available space.
+                        final widthPlan = computeColumnWidthPlan<T>(fields: fields, data: state.data, headerStyle: effectiveHeaderStyle, cellStyle: cellTextStyle, availableWidth: constraints.maxWidth, columnSpacing: columnSpacing, horizontalMargin: horizontalMargin, hasSelectionColumn: hasSelectionColumn, selectionLabel: selectName);
+                        // codex: Build header columns constrained to their planned widths.
+                        final plannedColumns = <DataColumn>[
+                          // codex: Constrain each header so columns compress instead of clipping neighbors.
+                          ...fields.asMap().entries.map(
+                            (entry) => DataColumn(
+                              label: SizedBox(
+                                width: widthPlan.columnWidths[entry.key],
+                                // codex: Render the sortable/filterable header inside the constrained box so it truncates with the column.
+                                child: SortableFilterableW(
+                                  fields: fields,
+                                  labelId: entry.value.labelId,
+                                  onPressed: (updated) => _dispatchFields(context, updated),
+                                  onChanged: (updated) => _dispatchFields(context, updated), // codex: Keep header behavior consistent while letting width shrink.
+                                  alwaysShowFilter: alwaysShowFilter,
+                                  preserveFieldOrderOnSort: preserveFieldOrderOnSort,
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (hasSelectionColumn)
+                            DataColumn(
+                              label: SizedBox(
+                                width: widthPlan.selectionColumnWidth,
+                                child: InkWell(
+                                  // codex: Style the selection header using the themed header style so it remains recognizable.
+                                  child: Text(selectName, style: effectiveHeaderStyle.copyWith(decoration: TextDecoration.underline)),
+                                  onTap: () => onSelectHeaderButton!(state.selectedIds),
+                                ),
+                              ),
+                            ),
+                        ];
+                        // codex: Create a data source that applies the same column widths for ellipsis alignment.
+                        final plannedDataSource = DataGridRowsDTS(state.data, fields, onRowClick, identityFieldId, state.selectedIds, (entries) => _dispatchSelection(context, entries), fontSize: fontSize, onCheckboxChange: onCheckboxChange, onCheckRequirement: onCheckRequirement, columnWidths: widthPlan.columnWidths, selectionColumnWidth: widthPlan.selectionColumnWidth);
+                        // codex: Expand the table width when columns exceed the viewport while still allowing full-width layout when they fit.
+                        final tableWidth = widthPlan.totalTableWidth > constraints.maxWidth ? widthPlan.totalTableWidth : constraints.maxWidth;
+                        // codex: Wrap the table in horizontal scroll to avoid overflow errors on tight layouts.
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                            child: SizedBox(
+                              width: tableWidth,
+                              // codex: Render the static DataTable with the planned column widths applied.
+                              child: DataTable(columnSpacing: columnSpacing, horizontalMargin: horizontalMargin, dividerThickness: 0, showCheckboxColumn: false, dataRowMaxHeight: state.rowHeight, dataRowMinHeight: state.rowHeight, rows: plannedDataSource.getAllRows(), headingRowHeight: state.headerHeight + state.remainderHeight, columns: plannedColumns),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   )
                 else
                   Container(
                     decoration: const BoxDecoration(),
-                    child: SingleChildScrollView(
-                      child: AtreeonPaginatedDataTable(
-                        columnSpacing: columnSpacing,
-                        horizontalMargin: horizontalMargin,
-                        showCheckboxColumn: false,
-                        showFirstLastButtons: true,
-                        dataRowHeight: state.rowHeight,
-                        source: dataSource,
-                        headingRowHeight: state.headerHeight + (state.remainderHeight / 2),
-                        columns: columns,
-                        rowsPerPage: state.rowsPerPage,
-                        fontSize: fontSize,
-                        iconSize: 20,
-                        footerHeight: state.footerHeight + (state.remainderHeight / 2),
-                      ),
+                    // codex: Apply the same width planning to the paginated table variant.
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        // codex: Compute column widths that favor longer content while respecting header minimums.
+                        final widthPlan = computeColumnWidthPlan<T>(fields: fields, data: state.data, headerStyle: effectiveHeaderStyle, cellStyle: cellTextStyle, availableWidth: constraints.maxWidth, columnSpacing: columnSpacing, horizontalMargin: horizontalMargin, hasSelectionColumn: hasSelectionColumn, selectionLabel: selectName);
+                        // codex: Constrain header widgets to the planned widths for consistent truncation.
+                        final plannedColumns = <DataColumn>[
+                          // codex: Apply width constraints to each header so columns compress predictably.
+                          ...fields.asMap().entries.map(
+                            (entry) => DataColumn(
+                              label: SizedBox(
+                                width: widthPlan.columnWidths[entry.key],
+                                // codex: Keep the header widget constrained so pagination uses the same width rules.
+                                child: SortableFilterableW(
+                                  fields: fields,
+                                  labelId: entry.value.labelId,
+                                  onPressed: (updated) => _dispatchFields(context, updated),
+                                  onChanged: (updated) => _dispatchFields(context, updated), // codex: Preserve header behavior while allowing truncation.
+                                  alwaysShowFilter: alwaysShowFilter,
+                                  preserveFieldOrderOnSort: preserveFieldOrderOnSort,
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (hasSelectionColumn)
+                            DataColumn(
+                              label: SizedBox(
+                                width: widthPlan.selectionColumnWidth,
+                                child: InkWell(
+                                  // codex: Apply the themed style to the selection header for consistency.
+                                  child: Text(selectName, style: effectiveHeaderStyle.copyWith(decoration: TextDecoration.underline)),
+                                  onTap: () => onSelectHeaderButton!(state.selectedIds),
+                                ),
+                              ),
+                            ),
+                        ];
+                        // codex: Build a data source that shares the same width constraints to align ellipsis.
+                        final plannedDataSource = DataGridRowsDTS(state.data, fields, onRowClick, identityFieldId, state.selectedIds, (entries) => _dispatchSelection(context, entries), fontSize: fontSize, onCheckboxChange: onCheckboxChange, onCheckRequirement: onCheckRequirement, columnWidths: widthPlan.columnWidths, selectionColumnWidth: widthPlan.selectionColumnWidth);
+                        // codex: Determine the rendered table width so horizontal scrolling can be enabled when needed.
+                        final tableWidth = widthPlan.totalTableWidth > constraints.maxWidth ? widthPlan.totalTableWidth : constraints.maxWidth;
+                        // codex: Allow horizontal scrolling to prevent overflow when columns cannot compress further.
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                            child: SizedBox(
+                              width: tableWidth,
+                              child: SingleChildScrollView(
+                                // codex: Render the paginated table using the planned widths so body cells and headers stay aligned.
+                                child: AtreeonPaginatedDataTable(columnSpacing: columnSpacing, horizontalMargin: horizontalMargin, showCheckboxColumn: false, showFirstLastButtons: true, dataRowHeight: state.rowHeight, source: plannedDataSource, headingRowHeight: state.headerHeight + (state.remainderHeight / 2), columns: plannedColumns, rowsPerPage: state.rowsPerPage, fontSize: fontSize, iconSize: 20, footerHeight: state.footerHeight + (state.remainderHeight / 2)),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 if (onCreateClick != null)
