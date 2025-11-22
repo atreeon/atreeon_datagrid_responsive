@@ -139,7 +139,7 @@ class ReusableDataGridView<T> extends StatelessWidget {
                               ),
                             ),
                         ];
-                        // codex: Create a data source that applies the same column widths for ellipsis alignment.
+                        // codex: Create a data source that applies the same column widths so wrapped cells and headers stay aligned.
                         final plannedDataSource = DataGridRowsDTS(state.data, fields, onRowClick, identityFieldId, state.selectedIds, (entries) => _dispatchSelection(context, entries), fontSize: fontSize, onCheckboxChange: onCheckboxChange, onCheckRequirement: onCheckRequirement, columnWidths: widthPlan.columnWidths, selectionColumnWidth: widthPlan.selectionColumnWidth);
                         // codex: Expand the table width when columns exceed the viewport while still allowing full-width layout when they fit.
                         final tableWidth = widthPlan.totalTableWidth > constraints.maxWidth ? widthPlan.totalTableWidth : constraints.maxWidth;
@@ -197,7 +197,7 @@ class ReusableDataGridView<T> extends StatelessWidget {
                               ),
                             ),
                         ];
-                        // codex: Build a data source that shares the same width constraints to align ellipsis.
+                        // codex: Build a data source that shares the same width constraints so wrapped body cells line up with headers.
                         final plannedDataSource = DataGridRowsDTS(state.data, fields, onRowClick, identityFieldId, state.selectedIds, (entries) => _dispatchSelection(context, entries), fontSize: fontSize, onCheckboxChange: onCheckboxChange, onCheckRequirement: onCheckRequirement, columnWidths: widthPlan.columnWidths, selectionColumnWidth: widthPlan.selectionColumnWidth);
                         // codex: Determine the rendered table width so horizontal scrolling can be enabled when needed.
                         final tableWidth = widthPlan.totalTableWidth > constraints.maxWidth ? widthPlan.totalTableWidth : constraints.maxWidth;

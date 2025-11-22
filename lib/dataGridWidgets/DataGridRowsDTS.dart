@@ -37,7 +37,7 @@ class DataGridRowsDTS<T> extends DataTableSource {
     required this.fontSize,
     this.onCheckboxChange,
     this.onCheckRequirement,
-    // codex: Accept width constraints to enforce ellipsis against header-sized columns.
+    // codex: Accept width constraints so wrapped body content stays aligned with header sizing.
     this.columnWidths,
     // codex: Accept an optional width for the selection column so it mirrors the header.
     this.selectionColumnWidth,
@@ -62,21 +62,21 @@ class DataGridRowsDTS<T> extends DataTableSource {
         ...fields
             .mapIndexed(
               (index, e) => DataCell(
-                // codex: Constrain the cell to the calculated column width so content ellipsizes before widening the table.
+                // codex: Constrain the cell to the calculated column width so wrapped content scrolls instead of forcing other columns wider.
                 ConstrainedBox(
                   // codex: Apply the provided per-column width or allow natural sizing when absent.
                   constraints: BoxConstraints(maxWidth: columnWidths != null && index < columnWidths!.length ? columnWidths![index] ?? double.infinity : double.infinity),
-                  // codex: Retain the scroll wrapper so tall content can overflow vertically without affecting layout.
+                  // codex: Retain the scroll wrapper so wrapped text can be read without increasing row height.
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical, //.horizontal
                     child: Text(
                       e.format != null ? e.format!(data[i]) : e.fieldDefinition(data[i]).toString(),
-                      // codex: Force a single line so text truncates instead of wrapping and expanding the column.
-                      maxLines: 1,
-                      // codex: Disable wrapping to allow ellipsis rendering.
-                      softWrap: false,
-                      // codex: Replace overflowed text with an ellipsis to keep all columns visible.
-                      overflow: TextOverflow.ellipsis,
+                      // codex: Allow the text to wrap to the column width so shorter headers shrink first; scrolling reveals any extra lines within the fixed row height.
+                      softWrap: true,
+                      // codex: Let wrapped content extend to multiple lines while staying within the scroll view.
+                      maxLines: null,
+                      // codex: Show wrapped content without ellipsis so users can scroll to read full values.
+                      overflow: TextOverflow.visible,
                       style: TextStyle(fontSize: this.fontSize),
                     ),
                   ),
