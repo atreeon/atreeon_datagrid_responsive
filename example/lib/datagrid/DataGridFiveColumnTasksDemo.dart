@@ -4,41 +4,6 @@ import 'package:atreeon_datagrid_responsive/sortFilterFields/models/FilterField.
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-/// {@template demo_task}
-/// Represents a lightweight task used to exercise the five-column data grid demo.
-/// {@endtemplate}
-class DemoTask {
-  /// Unique identifier for the task row.
-  final String id;
-
-  /// Human-readable task name displayed in the Title column.
-  final String name;
-
-  /// Estimated effort in hours for the Estimate column.
-  final double timeEstimateHours;
-
-  /// Planned start date for the Start Date column.
-  final DateTime startDate;
-
-  /// Target due date for the Due Date column.
-  final DateTime dueDate;
-
-  /// {@macro demo_task}
-  const DemoTask({required this.id, required this.name, required this.timeEstimateHours, required this.startDate, required this.dueDate});
-}
-
-/// Creates stable sample tasks for the five-column demo grid.
-List<DemoTask> buildDemoTasks() => <DemoTask>[
-  DemoTask(id: 'AT-1001', name: 'Design responsive layout', timeEstimateHours: 4.5, startDate: DateTime(2024, 6, 10), dueDate: DateTime(2024, 6, 12)),
-  DemoTask(id: 'AT-1002', name: 'Integrate authentication', timeEstimateHours: 7, startDate: DateTime(2024, 6, 11), dueDate: DateTime(2024, 6, 14)),
-  DemoTask(id: 'AT-1003', name: 'Write onboarding flow', timeEstimateHours: 5, startDate: DateTime(2024, 6, 12), dueDate: DateTime(2024, 6, 15)),
-  DemoTask(id: 'AT-1004', name: 'Implement analytics events', timeEstimateHours: 3.5, startDate: DateTime(2024, 6, 13), dueDate: DateTime(2024, 6, 16)),
-  DemoTask(id: 'AT-1005', name: 'QA payment edge cases', timeEstimateHours: 6, startDate: DateTime(2024, 6, 14), dueDate: DateTime(2024, 6, 18)),
-  DemoTask(id: 'AT-1006', name: 'Optimize startup time', timeEstimateHours: 2.5, startDate: DateTime(2024, 6, 15), dueDate: DateTime(2024, 6, 17)),
-  DemoTask(id: 'AT-1007', name: 'Refresh typography scale', timeEstimateHours: 3, startDate: DateTime(2024, 6, 16), dueDate: DateTime(2024, 6, 19)),
-  DemoTask(id: 'AT-1008', name: 'Ship release checklist', timeEstimateHours: 1.5, startDate: DateTime(2024, 6, 17), dueDate: DateTime(2024, 6, 19)),
-];
-
 /// {@template five_column_demo}
 /// Screen that demonstrates five columns with filtering, selection, and formatting callbacks.
 /// {@endtemplate}
@@ -138,3 +103,36 @@ class _DataGridFiveColumnTasksDemoState extends State<DataGridFiveColumnTasksDem
     );
   }
 }
+
+/// Represents a lightweight task used to exercise the five-column data grid demo.
+class DemoTask {
+  /// Unique identifier for the task row.
+  final String id;
+
+  /// Human-readable task name displayed in the Title column.
+  final String name;
+
+  /// Estimated effort in hours for the Estimate column.
+  final double timeEstimateHours;
+
+  /// Planned start date for the Start Date column.
+  final DateTime startDate;
+
+  /// Target due date for the Due Date column.
+  final DateTime dueDate;
+
+  /// {@macro demo_task}
+  const DemoTask({required this.id, required this.name, required this.timeEstimateHours, required this.startDate, required this.dueDate});
+}
+
+/// Creates stable sample tasks for the five-column demo grid.
+List<DemoTask> buildDemoTasks() => <DemoTask>[
+  DemoTask(id: 'AT-1001', name: 'Design responsive layout', timeEstimateHours: 4.5, startDate: DateTime(2024, 6, 10), dueDate: DateTime(2024, 6, 12)),
+  DemoTask(id: 'AT-1002', name: 'Integrate authentication', timeEstimateHours: 7, startDate: DateTime(2024, 6, 11), dueDate: DateTime(2024, 6, 14)),
+  DemoTask(id: 'AT-1003', name: 'Write onboarding flow', timeEstimateHours: 5, startDate: DateTime(2024, 6, 12), dueDate: DateTime(2024, 6, 15)),
+  DemoTask(id: 'AT-1004', name: 'Implement analytics events', timeEstimateHours: 3.5, startDate: DateTime(2024, 6, 13), dueDate: DateTime(2024, 6, 16)),
+  DemoTask(id: 'AT-1005', name: 'QA payment edge cases', timeEstimateHours: 6, startDate: DateTime(2024, 6, 14), dueDate: DateTime(2024, 6, 18)),
+  DemoTask(id: 'AT-1006', name: 'Optimize startup time', timeEstimateHours: 2.5, startDate: DateTime(2024, 6, 15), dueDate: DateTime(2024, 6, 17)),
+  DemoTask(id: 'AT-1007', name: 'Refresh typography scale', timeEstimateHours: 3, startDate: DateTime(2024, 6, 16), dueDate: DateTime(2024, 6, 19)),
+  DemoTask(id: 'AT-1008', name: 'Ship release checklist', timeEstimateHours: 1.5, startDate: DateTime(2024, 6, 17), dueDate: DateTime(2024, 6, 19)),
+];

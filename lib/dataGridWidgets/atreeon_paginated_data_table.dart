@@ -524,7 +524,9 @@ class AtreeonPaginatedDataTableState extends State<AtreeonPaginatedDataTable> {
               controller: widget.controller,
               dragStartBehavior: widget.dragStartBehavior,
               child: ConstrainedBox(
-                constraints: BoxConstraints(minWidth: constraints.minWidth, maxWidth: constraints.maxWidth),
+                // codex: Keep table at least as wide as the viewport but let it grow wider so the horizontal
+                // codex: scroll view can handle overflow instead of forcing a flex overflow.
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
                 child: DataTable(
                   key: _tableKey,
                   columns: widget.columns,
