@@ -81,10 +81,8 @@ class ReusableDataGridView<T> extends StatelessWidget {
 
         // Pull header sizing from the theme so we can switch between regular and large header
         final headerTheme = context.dgHeaderTheme;
-        final textScaler = MediaQuery.textScalerOf(context);
-        final effectiveHeaderStyle = headerTheme.titleStyle.copyWith(
-          fontSize: textScaler.scale(headerTheme.titleStyle.fontSize ?? 14),
-        );
+        // codex: Use the header theme style directly to avoid applying text scaling twice when the app theme already scales text.
+        final effectiveHeaderStyle = headerTheme.titleStyle;
         final fields = state.fields;
         // codex: Track whether the trailing selection column should be rendered so width allocation accounts for it.
         // codex: Flag whether the Clear column should render so width planning can include it.
