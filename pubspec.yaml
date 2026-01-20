@@ -1,6 +1,6 @@
 name: atreeon_datagrid_responsive
 description: A datagrid with sorting and filtering capabilities.  It is also responsive to screen size.  Fully Typed.
-version: 0.6.1
+version: 0.6.1+1
 homepage: https://atreeon.com
 repository: https://github.com/atreeon/atreeon_datagrid_responsive
 
@@ -18,12 +18,8 @@ dependencies:
   intl: ">=0.18.0 <1.0.0"
   atreeon_get_child_size: ">=0.1.1 <0.2.0"
   adaptive_dialog: ^1.6.3
-  morphy:
-    git:
-      url: https://github.com/atreeon/morphy.git
-      path: morphy
-      ref: 1.4.3
-  morphy_annotation: ^1.4.2+2
+  morphy: any
+  morphy_annotation: any
   flutter_bloc: ^8.1.6
 
 dev_dependencies:
