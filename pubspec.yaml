@@ -22,12 +22,12 @@ dependencies:
     git:
       url: https://github.com/atreeon/morphy.git
       path: morphy
-      ref: release/1.4.6
+      ref: release/1.5.0
   morphy_annotation:
     git:
       url: https://github.com/atreeon/morphy.git
       path: morphy_annotation
-      ref: release/1.4.6
+      ref: release/1.5.0
   flutter_bloc: ^8.1.6
 
 dev_dependencies:
