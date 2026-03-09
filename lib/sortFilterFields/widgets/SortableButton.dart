@@ -124,9 +124,14 @@ class SortableButton<T> extends StatelessWidget {
               style: effectiveTextStyle.copyWith(color: Colors.blue),
             ),
           ],
-          Text(
-            this.buttonText ?? labelId,
-            style: effectiveTextStyle.copyWith(color: Colors.blue),
+          Flexible(
+            child: Text(
+              this.buttonText ?? labelId,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: effectiveTextStyle.copyWith(color: Colors.blue),
+            ),
           ),
           if (!alwaysShowFilter && filterSet) //
             Icon(
@@ -145,7 +150,7 @@ class SortableButton<T> extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        sortTapTarget,
+        Flexible(child: sortTapTarget),
         const SizedBox(width: 4),
         WFilterButton(
           isFiltered: filterSet,
