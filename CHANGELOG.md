@@ -1,3 +1,6 @@
+## [0.6.5]
+    Update Font Awesome rendering so the package remains compatible with Flutter 3.44.
+
 ## [0.4.0]
     onCheckboxChange parameter to notify changes on checkbox changes
 
@@ -31,7 +34,6 @@
     reusableDataGridW.dart:124:to do: add tests here as is complicated
     
     
-
 
 
 

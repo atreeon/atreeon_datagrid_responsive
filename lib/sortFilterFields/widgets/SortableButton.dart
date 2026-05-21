@@ -114,7 +114,8 @@ class SortableButton<T> extends StatelessWidget {
         children: [
           if (thisSort != null) //
           ...[
-            Icon(
+            // codex: Use FaIcon so Font Awesome icon data is rendered through the package widget instead of extending Flutter's now-final IconData.
+            FaIcon(
               thisSort!.isAscending ? FontAwesomeIcons.angleUp : FontAwesomeIcons.angleDown,
               size: effectiveIconSize,
               color: Colors.blue,
